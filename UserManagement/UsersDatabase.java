@@ -1,3 +1,4 @@
+package UserManagement;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -7,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsersDatabase {
-    private static String filepath = "users.csv"; 
+    private static String filepath = "Resources/users.csv";
     static List<User> users = loadUsersFromFile();
     
-    static void saveToFile(User u) {
+    static void appendToFile(User u) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true))) {
             writer.write(u.toString());
             writer.newLine();
@@ -18,6 +19,18 @@ public class UsersDatabase {
             e.printStackTrace();
         }
     }
+
+    static void updateFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, false))) {
+            for (User user : users) {
+                writer.write(user.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     static List<User> loadUsersFromFile() {
         List<User> users = new ArrayList<>();

@@ -1,3 +1,4 @@
+package UserManagement;
 public class User {
     private int id;
     private String username, password;
@@ -19,7 +20,7 @@ public class User {
         this.username = username;
         this.password = password;
         if (save)
-            saveToFile();
+            appendToFile();
     }
 
     // Getters
@@ -33,26 +34,28 @@ public class User {
 
     // Setters
     public boolean setName(String newUsername, String password) {
-        if (this.password != password) {
+        if (!this.password.equals(password)) {
             System.out.println("Password doesn't match");
             return false;
         }
         this.username = newUsername;
+        UsersDatabase.updateFile();
         return true;
     }
 
     public boolean setPassword(String newPassword, String oldPassword) {
-        if (this.password != oldPassword) {
+        if (!this.password.equals(oldPassword)) {
             System.out.println("Password doesn't match");
             return false;
         }
         this.password = newPassword;
+        UsersDatabase.updateFile();
         return true;
     }
 
     // Database methods
-    private void saveToFile() {
-        UsersDatabase.saveToFile(this);
+    private void appendToFile() {
+        UsersDatabase.appendToFile(this);
     }
 
     public static User login(String username, String password) {
@@ -134,7 +137,7 @@ public class User {
     }
 
     public static void main(String[] args) {
-        User us1 = User.register("samxal2", "Aas1234");
-        System.out.println(us1);
+        User us1 = User.login("Emil", "Elvin1234");
+        UsersDatabase.updateFile();
     }
 }
