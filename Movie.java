@@ -1,6 +1,8 @@
 public class Movie {
-    private String title, director; 
-    private int releaseYear, runningTime; 
+    private String title;
+    private String director; 
+    private int releaseYear;
+    private int runningTime; 
 
     public Movie (String Title, String director, int releaseYear, int runningTime){
         this.title = title; 
@@ -61,5 +63,9 @@ public class Movie {
     public void setRunningTime(int runningTime) {
         this.runningTime = runningTime;
     } 
+
+    public String toString() {
+        return title + "," + releaseYear + "," + director + "," + runningTime; 
+    }
 
 }
