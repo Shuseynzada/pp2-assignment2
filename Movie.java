@@ -2,7 +2,7 @@ public class Movie {
     private String title, director; 
     private int releaseYear, runningTime; 
 
-    public Movie (String Title, String director, int releaseYear, int runningTime){
+    public Movie (String title, String director, int releaseYear, int runningTime){
         this.title = title; 
         this.director = director; 
         if(releaseYear >= 1885){
@@ -19,7 +19,7 @@ public class Movie {
         }
     }  
 
-    public Movie (String Title, int releaseYear){
+    public Movie (String title, int releaseYear){
         this.title = title; 
         if(releaseYear >= 1885){
             this.releaseYear = releaseYear; 
@@ -29,7 +29,7 @@ public class Movie {
         } 
     } 
 
-    public Movie (String Title, String director){
+    public Movie (String title, String director){
         this.title = title; 
         this.director = director; 
     } 
