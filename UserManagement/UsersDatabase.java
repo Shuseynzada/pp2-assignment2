@@ -18,6 +18,7 @@ public class UsersDatabase {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        users.add(u);
     }
 
     static void updateFile() {
