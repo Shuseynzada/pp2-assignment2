@@ -1,5 +1,6 @@
 package UserManagement;
 
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,12 +14,12 @@ import org.w3c.dom.UserDataHandler;
 
 public class User {
     private int id;
-    private String username, password;
+    private String username, password;  
 
     // Constructors
     User(String username, String password) { // for temporary user objects
         this.username = username;
-        this.password = password;
+        this.password = password; 
     }
 
     User(int id, String username, String password) {
@@ -30,7 +31,7 @@ public class User {
     User(int id, String username, String password, boolean save) { // Save user directly with constructor
         this.id = id;
         this.username = username;
-        this.password = password;
+        this.password = password; 
         if (save)
             appendToFile();
     }
@@ -82,7 +83,7 @@ public class User {
     }
 
     public static User register(String username, String password) {
-        boolean userFlag = false;
+        boolean userFlag = false; 
         for (User user : UsersDatabase.users) {
             if (user.username.equals(username)) {
                 userFlag = true;
@@ -90,14 +91,14 @@ public class User {
             }
         }
 
-        if (userFlag) {
+        if (userFlag) { 
             System.out.println("Username already exists"); // Exception handling needed
-            return null;
+            return new User("false",null);
         }
 
-        if (!(isPasswordValid(password))) {
+        if (!(isPasswordValid(password))) { 
             System.out.println("Password is not valid");
-            return null;// Exception handling needed
+            return new User("true", null);// Exception handling needed
         }
         return new User(UsersDatabase.users.size(), username, password, true);
 
@@ -150,7 +151,7 @@ public class User {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame(); 
-        JLabel l1, l2, l3; 
+        JLabel l, l1, l2, l3; 
         JButton login, signup; 
         JTextField usernameField; 
         JPasswordField passwordField; 
@@ -161,38 +162,59 @@ public class User {
         l2 = new JLabel("Username"); 
         l2.setBounds(50,30, 100, 30); 
         usernameField = new JTextField(); 
-        usernameField.setBounds(50,50, 100, 30); 
+        usernameField.setBounds(50,50, 220, 30); 
 
         l3 = new JLabel("Password"); 
         l3.setBounds(50,80,100,30); 
         passwordField = new JPasswordField(); 
-        passwordField.setBounds(50,100, 100, 30); 
+        passwordField.setBounds(50,100, 220, 30); 
 
         login = new JButton("Login"); 
         login.setBounds(50,130, 100, 30); 
         signup = new JButton("Sign Up"); 
         signup.setBounds(170,130, 100, 30); 
 
-        login.addActionListener(new ActionListener(){
+        l = new JLabel(); 
+        l.setBounds(50,160,300,30); 
+
+         /* login.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
                 String password = new String(passwordField.getPassword()); 
                 User us1 = User.login(usernameField.getText(), password);
                 UsersDatabase.updateFile(); 
             }
-        }); 
+        }); */
 
+        login.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) { 
+                String password  = new String(passwordField.getPassword());
+                User user = User.login(usernameField.getText(), password); 
+                if (User.login(usernameField.getText(), password) == null){ 
+                    l.setText("No such User found");
+                }
+            }
+
+        });
 
         signup.addActionListener(new ActionListener(){
 
             public void actionPerformed(ActionEvent e) {
                 String password = new String(passwordField.getPassword()); 
-                User us1 = User.register(usernameField.getText(), password);
-                UsersDatabase.updateFile(); 
+                User user = User.register(usernameField.getText(), password); 
+                if(User.register(usernameField.getText(), password).username == "false"){ 
+                    l.setText("Username already exist");
+                } 
+                if(User.register(usernameField.getText(), password).username == "true"){
+                    l.setText("Password is not valid");
+                }
+                else UsersDatabase.updateFile(); 
             }
         });
 
-  
+        frame.add(l); 
         frame.add(l1);
         frame.add(l2);
         frame.add(l3);
