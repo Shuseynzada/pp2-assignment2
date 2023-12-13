@@ -49,8 +49,4 @@ public class MovieDatabase {
             System.out.println(movie);
         }
     }
-
-    public static void main(String[] args) {
-        loadMoviesFromFile();
-    }
 }

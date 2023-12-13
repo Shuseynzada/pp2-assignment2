@@ -7,7 +7,7 @@ import javax.swing.JTextField;
 public class WelcomePage {
     public static void main(String[] args){
         JFrame frame = new JFrame(); 
-        JLabel l1, l2, l3, l4; 
+        JLabel l1, l2, l3; 
         JButton login, signup; 
         JTextField usernameField; 
         JPasswordField passwordField; 
