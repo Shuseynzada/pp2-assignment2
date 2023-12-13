@@ -137,7 +137,8 @@ public class User {
     }
 
     public static void main(String[] args) {
-        User us1 = User.login("Emil", "Elvin1234");
-        UsersDatabase.updateFile();
+        for (User u : UsersDatabase.users) {
+            System.out.println(u);
+        }
     }
 }
