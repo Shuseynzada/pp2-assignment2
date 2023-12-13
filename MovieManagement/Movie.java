@@ -1,4 +1,12 @@
 package MovieManagement;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 public class Movie {
     private String title;
     private String director; 
@@ -67,6 +75,62 @@ public class Movie {
 
     public String toString() {
         return title + "," + releaseYear + "," + director + "," + runningTime; 
+    } 
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame(); 
+        JLabel l1, l2, l3, l4,l5; 
+        JButton AddtoFavorite; 
+        JTextField title, director,year, time; 
+        
+        l1 = new JLabel("Welcome! Movie Page"); 
+        l1.setBounds(50,0, 300, 30); 
+
+        l2 = new JLabel("Title"); 
+        l2.setBounds(50,30, 100, 30); 
+        title = new JTextField(); 
+        title.setBounds(50,50, 200, 30); 
+
+        l3 = new JLabel("Director"); 
+        l3.setBounds(50,80,100,30); 
+        director = new JTextField(); 
+        director.setBounds(50,100, 200, 30); 
+
+        l4 = new JLabel("Release Year"); 
+        l4.setBounds(50,130,100,30); 
+        year = new JTextField(); 
+        year.setBounds(50,150, 200, 30); 
+
+        l5 = new JLabel("Running Time"); 
+        l5.setBounds(50,180,100,30); 
+        time = new JTextField(); 
+        time.setBounds(50,200, 200, 30); 
+
+        AddtoFavorite = new JButton("Add to Favorite"); 
+        AddtoFavorite.setBounds(50,240, 200, 30); 
+
+        AddtoFavorite.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) { 
+                Movie m = new Movie(title.getText(), director.getText(),Integer.parseInt(year.getText()), Integer.parseInt(time.getText())); 
+                MovieDatabase.addToFile(m);
+            }
+        });
+  
+        frame.add(AddtoFavorite);
+        frame.add(l1);
+        frame.add(l2);
+        frame.add(l3);
+        frame.add(l4); 
+        frame.add(l5);
+        frame.add(title);
+        frame.add(year);
+        frame.add(director); 
+        frame.add(time);
+        frame.setSize(400,400); 
+        frame.setLayout(null);
+        frame.setVisible(true); 
     }
 
 }
