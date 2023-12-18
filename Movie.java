@@ -119,7 +119,7 @@ public class Movie {
                 Movie m = new Movie(title.getText(), director.getText(),Integer.parseInt(year.getText()), Integer.parseInt(time.getText())); 
                 MovieDatabase.addToFile(m);
             }
-        });
+        }); 
   
         frame.add(AddtoFavorite);
         frame.add(l1);
