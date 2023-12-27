@@ -10,7 +10,7 @@ public class MovieDatabase {
     static List<Movie> movies = loadMoviesFromFile();
     private static String filepath = "Resources/movies.csv";
 
-    static void addToFile(Movie m) {
+    public static void addToFile(Movie m) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true))) {
             writer.write(m.toString());
             writer.newLine();
@@ -19,7 +19,7 @@ public class MovieDatabase {
         }
     }
 
-    static void updateFile() {
+    public static void updateFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, false))) {
             for (Movie movie : movies) {
                 writer.write(movie.toString());

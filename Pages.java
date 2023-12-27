@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import MovieManagement.Movie;
+import MovieManagement.MovieDatabase;
 import UserManagement.User;
 import UserManagement.UsersDatabase;
 
