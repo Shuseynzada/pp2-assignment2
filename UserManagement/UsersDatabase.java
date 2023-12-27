@@ -11,7 +11,7 @@ public class UsersDatabase {
     private static String filepath = "Resources/users.csv";
     static List<User> users = loadUsersFromFile();
     
-    static void appendToFile(User u) {
+    public static void appendToFile(User u) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true))) {
             writer.write(u.toString());
             writer.newLine();
@@ -21,7 +21,7 @@ public class UsersDatabase {
         users.add(u);
     }
 
-    static void updateFile() {
+    public static void updateFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, false))) {
             for (User user : users) {
                 writer.write(user.toString());
