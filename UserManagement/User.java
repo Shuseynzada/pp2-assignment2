@@ -2,12 +2,13 @@ package UserManagement;
 
 public class User {
     private int id;
-    private String username, password;  
+    private String username, password;
+    private Watchlist watchlist = new Watchlist();;
 
     // Constructors
     User(String username, String password) { // for temporary user objects
         this.username = username;
-        this.password = password; 
+        this.password = password;
     }
 
     User(int id, String username, String password) {
@@ -16,10 +17,17 @@ public class User {
         this.password = password;
     }
 
+    User(int id, String username, String password, Watchlist watchlist) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.watchlist = watchlist;
+    }
+
     User(int id, String username, String password, boolean save) { // Save user directly with constructor
         this.id = id;
         this.username = username;
-        this.password = password; 
+        this.password = password;
         if (save)
             appendToFile();
     }
@@ -71,7 +79,7 @@ public class User {
     }
 
     public static User register(String username, String password) {
-        boolean userFlag = false; 
+        boolean userFlag = false;
         for (User user : UsersDatabase.users) {
             if (user.username.equals(username)) {
                 userFlag = true;
@@ -79,12 +87,12 @@ public class User {
             }
         }
 
-        if (userFlag) { 
+        if (userFlag) {
             System.out.println("Username already exists"); // Exception handling needed
-            return new User("false",null);
+            return new User("false", null);
         }
 
-        if (!(isPasswordValid(password))) { 
+        if (!(isPasswordValid(password))) {
             System.out.println("Password is not valid");
             return new User("true", null);// Exception handling needed
         }
@@ -115,16 +123,19 @@ public class User {
             }
         }
 
-        if (!lessLength) System.out.println("Password must contain more than 6 characters");
-        if (!containsDigit) System.out.println("Password must contain digits");
-        if (!containsUppercase)System.out.println("Password must contain upper case letters");
-        
+        if (!lessLength)
+            System.out.println("Password must contain more than 6 characters");
+        if (!containsDigit)
+            System.out.println("Password must contain digits");
+        if (!containsUppercase)
+            System.out.println("Password must contain upper case letters");
+
         return lessLength && containsDigit && containsUppercase;
     }
 
     @Override
     public String toString() {
-        return id + "," + username + "," + password;
+        return id + "," + username + "," + password+","+watchlist.toString();
     }
 
     @Override
@@ -136,5 +147,4 @@ public class User {
         User user = (User) o;
         return this.username.equals(user.username) && this.password.equals(user.password);
     }
-
 }
