@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class Movie {
@@ -14,54 +15,30 @@ public class Movie {
     private int releaseYear;
     private int runningTime;
 
-    class InvalidReleaseYearException extends Exception {
-            public InvalidReleaseYearException(String message) {
-                super(message);
-            }
-        }
-
-        class InvalidRunningTimeException extends Exception {
-            public InvalidRunningTimeException(String message) {
-                super(message);
-            }
-        }
-
-    public Movie(String Title, String director, int releaseYear, int runningTime) {
+    public Movie(String Title, String director, int releaseYear, int runningTime) throws InvalidRunningTimeException, InvalidReleaseYearException {
 
         this.title = Title;
         this.director = director;
 
-        try {
-            if (releaseYear < 1885 || releaseYear > 2024) {
-                throw new InvalidReleaseYearException("Invalid release year: " + releaseYear);
-            } else {
-                this.releaseYear = releaseYear;
-            }
-        } catch (InvalidReleaseYearException e) {
-            e.printStackTrace();
+        if (releaseYear < 1885 || releaseYear > 2023) {
+            throw new InvalidReleaseYearException("Invalid release year: " + releaseYear);
+        } else {
+            this.releaseYear = releaseYear;
         }
 
-        try {
-            if (runningTime <= 0) {
-                throw new InvalidRunningTimeException("Invalid running time: " + runningTime);
-            } else {
-                this.runningTime = runningTime;
-            }
-        } catch (InvalidRunningTimeException e) {
-            e.printStackTrace();
+        if (runningTime <= 0) {
+            throw new InvalidRunningTimeException("Invalid running time: " + runningTime);
+        } else {
+            this.runningTime = runningTime;
         }
     }
 
-    public Movie(String Title, int releaseYear) {
+    public Movie(String Title, int releaseYear) throws InvalidReleaseYearException {
         this.title = Title;
-        try {
-            if (releaseYear < 1885 || releaseYear > 2024) {
-                throw new InvalidReleaseYearException("Invalid release year: " + releaseYear);
-            } else {
-                this.releaseYear = releaseYear;
-            }
-        } catch (InvalidReleaseYearException e) {
-            e.printStackTrace();
+        if (releaseYear < 1885 || releaseYear > 2024) {
+            throw new InvalidReleaseYearException("Invalid release year: " + releaseYear);
+        } else {
+            this.releaseYear = releaseYear;
         }
     }
 
@@ -142,9 +119,16 @@ public class Movie {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                Movie m = new Movie(title.getText(), director.getText(), Integer.parseInt(year.getText()),
-                        Integer.parseInt(time.getText()));
-                MovieDatabase.addToFile(m);
+                try {
+                    int yearValue = Integer.parseInt(year.getText());
+                    int timeValue = Integer.parseInt(time.getText());
+                    Movie m = new Movie(title.getText(), director.getText(), yearValue, timeValue);
+                    MovieDatabase.addToFile(m);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Please enter valid numbers for year and running time");
+                } catch (InvalidReleaseYearException | InvalidRunningTimeException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage());
+            }
             }
         });
 

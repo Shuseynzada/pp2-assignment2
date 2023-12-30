@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import MovieManagement.InvalidReleaseYearException;
+import MovieManagement.InvalidRunningTimeException;
 import MovieManagement.Movie;
 import MovieManagement.MovieDatabase;
 import UserManagement.User;
@@ -130,8 +132,17 @@ public class Pages {
 
             @Override
             public void actionPerformed(ActionEvent e) { 
-                Movie m = new Movie(title.getText(), director.getText(),Integer.parseInt(year.getText()), Integer.parseInt(time.getText())); 
-                MovieDatabase.addToFile(m);
+                Movie m;
+                try {
+                    m = new Movie(title.getText(), director.getText(),Integer.parseInt(year.getText()), Integer.parseInt(time.getText()));
+                    MovieDatabase.addToFile(m);
+                } catch (NumberFormatException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidRunningTimeException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidReleaseYearException e1) {
+                    e1.printStackTrace();
+                } 
             }
         }); 
   

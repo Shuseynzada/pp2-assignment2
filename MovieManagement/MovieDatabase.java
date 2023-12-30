@@ -3,13 +3,14 @@ package MovieManagement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class MovieDatabase {
+public class MovieDatabase  {
     private static String filepath = "Resources/movies.csv";
     static List<Movie> movies = loadMoviesFromFile();
 
@@ -46,6 +47,12 @@ public class MovieDatabase {
             }
         } catch (IOException e) {
             System.out.println("Error loading movies: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (InvalidRunningTimeException e) {
+            e.printStackTrace();
+        } catch (InvalidReleaseYearException e) {
+            e.printStackTrace();
         }
         return resultMovies;
     }
