@@ -14,27 +14,54 @@ public class Movie {
     private int releaseYear;
     private int runningTime;
 
+    class InvalidReleaseYearException extends Exception {
+            public InvalidReleaseYearException(String message) {
+                super(message);
+            }
+        }
+
+        class InvalidRunningTimeException extends Exception {
+            public InvalidRunningTimeException(String message) {
+                super(message);
+            }
+        }
+
     public Movie(String Title, String director, int releaseYear, int runningTime) {
+
         this.title = Title;
         this.director = director;
-        if (releaseYear >= 1885) {
-            this.releaseYear = releaseYear;
-        } else {
-            System.out.println("Please Enter Appropiate Release Year (between 1885 and 2023)!");
+
+        try {
+            if (releaseYear < 1885 || releaseYear > 2024) {
+                throw new InvalidReleaseYearException("Invalid release year: " + releaseYear);
+            } else {
+                this.releaseYear = releaseYear;
+            }
+        } catch (InvalidReleaseYearException e) {
+            e.printStackTrace();
         }
-        if (runningTime != 0) {
-            this.runningTime = runningTime;
-        } else {
-            System.out.println("Please Enter Appropiate Running Time!");
+
+        try {
+            if (runningTime <= 0) {
+                throw new InvalidRunningTimeException("Invalid running time: " + runningTime);
+            } else {
+                this.runningTime = runningTime;
+            }
+        } catch (InvalidRunningTimeException e) {
+            e.printStackTrace();
         }
     }
 
     public Movie(String Title, int releaseYear) {
         this.title = Title;
-        if (releaseYear >= 1885) {
-            this.releaseYear = releaseYear;
-        } else {
-            System.out.println("Please Enter Appropiate Release Year (between 1885 and 2023)!");
+        try {
+            if (releaseYear < 1885 || releaseYear > 2024) {
+                throw new InvalidReleaseYearException("Invalid release year: " + releaseYear);
+            } else {
+                this.releaseYear = releaseYear;
+            }
+        } catch (InvalidReleaseYearException e) {
+            e.printStackTrace();
         }
     }
 
