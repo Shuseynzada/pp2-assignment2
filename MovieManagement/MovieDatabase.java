@@ -2,6 +2,7 @@ package MovieManagement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -49,7 +50,7 @@ public class MovieDatabase {
         return resultMovies;
     }
 
-    public static List<Movie> getMoviesByIndex(List<Integer> movieIDs) {
+    public static List<Movie> getMoviesByIndex(Set<Integer> movieIDs) {
         List<Movie> resMovies = new ArrayList<>();
         movieIDs.stream().filter(i->i > 0 && i < movies.size()).forEach(i->resMovies.add(movies.get(i)));
         return resMovies;

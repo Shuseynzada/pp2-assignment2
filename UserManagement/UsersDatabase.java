@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import MovieManagement.MovieDatabase;
-
 public class UsersDatabase {
     private static String filepath = "Resources/users.csv";
     static List<User> users = loadUsersFromFile();
@@ -46,19 +44,14 @@ public class UsersDatabase {
                     String username = parts[1];
                     String hashedPassword = parts[2];
 
-                    Watchlist watchlist = new Watchlist();
                     String[] movieStrings = parts[3].split(";");
-                    List<Integer> movieIDs = new ArrayList<>();
-                    for (String movieString : movieStrings) {
-                        try {
-                            int movieId = Integer.parseInt(movieString.trim()); // .trim() to remove any leading or                                                                 // trailing spaces
-                            movieIDs.add(movieId);
-                        } catch (NumberFormatException e) {
-                            System.err.println("Error parsing '" + movieString + "' to an integer");
-                        }
-                    }
-
-                    watchlist.addToWatchList(MovieDatabase.getMoviesByIndex(movieIDs));
+                    Watchlist watchlist = new Watchlist();
+                    watchlist.addToWatchList(movieStrings);
+                    users.add(new User(id, username, hashedPassword, watchlist));
+                } else if (parts.length >= 3) {
+                    int id = Integer.parseInt(parts[0]);
+                    String username = parts[1];
+                    String hashedPassword = parts[2];
                     users.add(new User(id, username, hashedPassword));
                 }
             }

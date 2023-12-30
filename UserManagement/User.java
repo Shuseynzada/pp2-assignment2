@@ -36,10 +36,13 @@ public class User {
     public int getId() {
         return this.id;
     }
-
     public String getName() {
         return this.username;
     }
+    public Watchlist getWatchList() {
+        return this.watchlist;
+    }
+
 
     // Setters
     public boolean setName(String newUsername, String password) {
@@ -135,7 +138,7 @@ public class User {
 
     @Override
     public String toString() {
-        return id + "," + username + "," + password+","+watchlist.toString();
+        return id + "," + username + "," + password+","+watchlist;
     }
 
     @Override
