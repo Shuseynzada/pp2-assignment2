@@ -18,7 +18,7 @@ import UserManagement.UserNotFoundException;
 import UserManagement.UsernameAlreadyExistsException;
 import UserManagement.UsersDatabase;
 
-public class Pages {
+public class PagesGUI {
     static boolean isLoginSuccess = false;
     static void loginPage(){ 
         JFrame frame = new JFrame(); 
@@ -47,15 +47,6 @@ public class Pages {
 
         l = new JLabel(); 
         l.setBounds(50,160,300,30); 
-
-         /* login.addActionListener(new ActionListener(){
-
-            public void actionPerformed(ActionEvent e) {
-                String password = new String(passwordField.getPassword()); 
-                User us1 = User.login(usernameField.getText(), password);
-                UsersDatabase.updateFile(); 
-            }
-        }); */
 
         login.addActionListener((ActionListener) new ActionListener(){
 
