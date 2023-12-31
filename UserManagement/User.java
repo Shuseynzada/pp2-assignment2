@@ -45,21 +45,23 @@ public class User {
 
 
     // Setters
-    public boolean setName(String newUsername, String password) {
+    public boolean setName(String newUsername, String password) throws InvalidUsernameException, IncorrectPasswordException {
+        if (newUsername == null || newUsername.isEmpty()) {
+            throw new InvalidUsernameException("Username cannot be null or empty.");
+        }
         if (!this.password.equals(password)) {
-            System.out.println("Password doesn't match");
-            return false;
+            throw new IncorrectPasswordException("Password doesn't match.");
         }
         this.username = newUsername;
         UsersDatabase.updateFile();
         return true;
     }
 
-    public boolean setPassword(String newPassword, String oldPassword) {
+    public boolean setPassword(String newPassword, String oldPassword) throws IncorrectPasswordException {
         if (!this.password.equals(oldPassword)) {
-            System.out.println("Password doesn't match");
-            return false;
+            throw new IncorrectPasswordException("Old password is incorrect.");
         }
+
         this.password = newPassword;
         UsersDatabase.updateFile();
         return true;
@@ -70,18 +72,17 @@ public class User {
         UsersDatabase.appendToFile(this);
     }
 
-    public static User login(String username, String password) {
+    public static User login(String username, String password) throws UserNotFoundException {
         User tempUser = new User(-1, username, password);
         for (User user : UsersDatabase.users) {
             if (tempUser.equals(user)) {
                 return user;
             }
         }
-        System.out.println("No such User found");
-        return null;
+        throw new UserNotFoundException("No such User found");
     }
 
-    public static User register(String username, String password) {
+    public static User register(String username, String password) throws UsernameAlreadyExistsException {
         boolean userFlag = false;
         for (User user : UsersDatabase.users) {
             if (user.username.equals(username)) {
@@ -91,24 +92,29 @@ public class User {
         }
 
         if (userFlag) {
-            System.out.println("Username already exists"); // Exception handling needed
-            return new User("false", null);
+            throw new UsernameAlreadyExistsException("Username already exists");
         }
 
-        if (!(isPasswordValid(password))) {
-            System.out.println("Password is not valid");
-            return new User("true", null);// Exception handling needed
+        try {
+            if (!isPasswordValid(password)) {
+                System.out.println("Password is not valid");
+                return new User("true", null);
+            }
+        } catch (InvalidPasswordLengthException | InvalidPasswordDigitException | InvalidPasswordUppercaseException e) {
+            System.out.println(e.getMessage());
+            return new User("error", null);
         }
+
         return new User(UsersDatabase.users.size(), username, password, true);
 
     }
 
     // Overrided and other static functions
 
-    public static boolean isPasswordValid(String password) { // Exception handling needed
-        boolean lessLength = true;
-        if (password.length() <= 6)
-            lessLength = false;
+    public static boolean isPasswordValid(String password) throws InvalidPasswordLengthException, InvalidPasswordDigitException, InvalidPasswordUppercaseException {
+        if (password.length() <= 6) {
+            throw new InvalidPasswordLengthException("Password must contain more than 6 characters");
+        }
 
         boolean containsDigit = false;
         for (char c : password.toCharArray()) {
@@ -116,6 +122,10 @@ public class User {
                 containsDigit = true;
                 break;
             }
+        }
+
+        if (!containsDigit) {
+            throw new InvalidPasswordDigitException("Password must contain digits");
         }
 
         boolean containsUppercase = false;
@@ -126,14 +136,11 @@ public class User {
             }
         }
 
-        if (!lessLength)
-            System.out.println("Password must contain more than 6 characters");
-        if (!containsDigit)
-            System.out.println("Password must contain digits");
-        if (!containsUppercase)
-            System.out.println("Password must contain upper case letters");
+        if (!containsUppercase) {
+            throw new InvalidPasswordUppercaseException("Password must contain upper case letters");
+        }
 
-        return lessLength && containsDigit && containsUppercase;
+        return true;
     }
 
     @Override

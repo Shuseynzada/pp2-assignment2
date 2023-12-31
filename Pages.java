@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -11,7 +12,10 @@ import MovieManagement.InvalidReleaseYearException;
 import MovieManagement.InvalidRunningTimeException;
 import MovieManagement.Movie;
 import MovieManagement.MovieDatabase;
+import UserManagement.IncorrectPasswordException;
 import UserManagement.User;
+import UserManagement.UserNotFoundException;
+import UserManagement.UsernameAlreadyExistsException;
 import UserManagement.UsersDatabase;
 
 public class Pages {
@@ -58,12 +62,16 @@ public class Pages {
             @Override
             public void actionPerformed(ActionEvent e) { 
                 String password  = new String(passwordField.getPassword());
-                if (User.login(usernameField.getText(), password) == null){ 
-                    l.setText("No such User found"); 
-                } 
-                else {
-                    frame.dispose();
-                    moviePage();
+                try {
+                    User user = User.login(usernameField.getText(), password);
+                    if (user == null) { 
+                        l.setText("Login failed"); 
+                    } else {
+                        frame.dispose();
+                        moviePage();
+                    }
+                } catch (UserNotFoundException ex) {
+                    JOptionPane.showMessageDialog(frame, "User not found: " + ex.getMessage(), "Login Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -73,13 +81,12 @@ public class Pages {
 
             public void actionPerformed(ActionEvent e) {
                 String password = new String(passwordField.getPassword());
-                if(User.register(usernameField.getText(), password).getName() == "false"){ 
-                    l.setText("Username already exist");
-                } 
-                if(User.register(usernameField.getText(), password).getName() == "true"){
-                    l.setText("Password is not valid");
+                try {
+                    User newUser = User.register(usernameField.getText(), password);
+                    UsersDatabase.updateFile(); 
+                } catch (UsernameAlreadyExistsException ex) {
+                    JOptionPane.showMessageDialog(frame, "Username already exists: " + ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
                 }
-                else UsersDatabase.updateFile(); 
             }
         });
 

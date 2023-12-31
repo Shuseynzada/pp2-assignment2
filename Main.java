@@ -1,5 +1,6 @@
 import MovieManagement.MovieDatabase;
 import UserManagement.User;
+import UserManagement.UserNotFoundException;
 import UserManagement.UsersDatabase;
 
 public class Main {
