@@ -12,12 +12,13 @@ import java.io.IOException;
 
 public class MovieDatabase  {
     private static String filepath = "Resources/movies.csv";
-    private static int nextMovieIndex = 1;
+    private static int nextMovieIndex = 0;
     static List<Movie> movies = loadMoviesFromFile();
 
     public static void addToFile(Movie m) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true))) {
-            writer.write(m.toString());
+            String movieRecord = nextMovieIndex + "," + m.toString();
+            writer.write(movieRecord);
             writer.newLine();
             nextMovieIndex++; // Increment the index for the next movie
         } catch (IOException e) {
