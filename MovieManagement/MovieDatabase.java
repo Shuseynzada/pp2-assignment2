@@ -12,12 +12,14 @@ import java.io.IOException;
 
 public class MovieDatabase  {
     private static String filepath = "Resources/movies.csv";
+    private static int nextMovieIndex = 1;
     static List<Movie> movies = loadMoviesFromFile();
 
     public static void addToFile(Movie m) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true))) {
             writer.write(m.toString());
             writer.newLine();
+            nextMovieIndex++; // Increment the index for the next movie
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,15 +38,19 @@ public class MovieDatabase  {
 
     static List<Movie> loadMoviesFromFile() {
         List<Movie> resultMovies = new ArrayList<>();
+        int maxIndex = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length >= 4) {
-                    Movie movie = new Movie(data[0], data[2], Integer.parseInt(data[1]), Integer.parseInt(data[3]));
+                int index = Integer.parseInt(data[0]);
+                maxIndex = Math.max(maxIndex, index);
+                if (data.length >= 5) {
+                    Movie movie = new Movie(data[1], data[3], Integer.parseInt(data[2]), Integer.parseInt(data[4]));
                     resultMovies.add(movie);
                 }
             }
+            nextMovieIndex = maxIndex + 1; // Set the next index
         } catch (IOException e) {
             System.out.println("Error loading movies: " + e.getMessage());
         } catch (NumberFormatException e) {
