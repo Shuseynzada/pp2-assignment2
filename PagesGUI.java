@@ -112,7 +112,7 @@ public class PagesGUI {
 
     static void moviePage(User user) {
         JFrame frame = new JFrame("Movie Page");
-        String[] columns = { "ID", "Movie Name", "Director", "Release Year", "Running Time" };
+        String[] columns = { "ID", "Movie Name", "Director", "Release Year", "Running Time" ,"Add Watchlist"};
         String[][] generalMoviesData = {};
         String[][] watchlistData = {};
 
@@ -148,7 +148,34 @@ public class PagesGUI {
 
         JTable watchlistTable = new JTable(watchlistModel);
         JScrollPane watchlistScrollPane = new JScrollPane(watchlistTable);
+        class ButtonCellRenderer extends JButton implements javax.swing.table.TableCellRenderer {
+            public ButtonCellRenderer() {
+                setOpaque(true);
+            }
+        
+            @Override
+            public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                setText("+");
+                return this;
+            }
+        }
 
+        class ButtonCellRenderer2 extends JButton implements javax.swing.table.TableCellRenderer {
+            public ButtonCellRenderer2() {
+                setOpaque(true);
+            }
+        
+            @Override
+            public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                setText("-");
+                return this;
+            }
+        }
+        
+        // Set a custom renderer for the last column (index 5 for a zero-based index)
+        generalMoviesTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer());
+        watchlistTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer2());
+        
         JPanel tablesPanel = new JPanel(new GridLayout(1, 2));
         JPanel generalMoviesPanel = new JPanel(new BorderLayout());
         JPanel watchlistPanel = new JPanel(new BorderLayout());
@@ -198,6 +225,19 @@ public class PagesGUI {
                 } 
             }
         }); 
+
+// Set row height
+generalMoviesTable.setRowHeight(25); // Change the value (25) to adjust the row height
+// Set column width for each column (index 0 to 5 in this case)
+int[] columnWidths = { 50, 150, 150, 100, 100, 80 }; // Adjust these values to set column widths
+for (int i = 0; i < columns.length; i++) {
+    generalMoviesTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+}
+watchlistTable.setRowHeight(25); // Change the value (25) to adjust the row height
+// Set column width for each column (index 0 to 5 in this case)
+for (int i = 0; i < columns.length; i++) {
+    watchlistTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+}
 
 
 // ComboBox for sorting General Movies
