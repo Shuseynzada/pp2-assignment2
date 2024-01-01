@@ -17,7 +17,6 @@ import UserManagement.User;
 import UserManagement.UserNotFoundException;
 import UserManagement.UsernameAlreadyExistsException;
 import UserManagement.UsersDatabase;
-import UserManagement.Watchlist;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
