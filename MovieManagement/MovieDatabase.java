@@ -64,7 +64,7 @@ public class MovieDatabase {
 
     public static List<Movie> getMoviesByIndex(Set<Integer> movieIDs) {
         List<Movie> resMovies = new ArrayList<>();
-        movieIDs.stream().filter(i -> i > 0 && i < movies.size()).forEach(i -> resMovies.add(movies.get(i)));
+        movieIDs.stream().filter(i -> i >= 0 && i < movies.size()).forEach(i -> resMovies.add(movies.get(i)));
         return resMovies;
     }
 

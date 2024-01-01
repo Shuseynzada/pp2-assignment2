@@ -26,15 +26,14 @@ public class MoviePage {
         initializeUI();
     }
 
+    public User getUser() {
+        return this.user;
+    }
+
     private void initializeUI() {
         frame = new JFrame("Movie Page");
         frame.setSize(1500, 1200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        createGeneralMoviesPanel();
-        createWatchlistPanel();
-        createAddMoviePanel();
-
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel tablesPanel = new JPanel(new GridLayout(1, 2));
         tablesPanel.add(createGeneralMoviesPanel());
@@ -48,13 +47,15 @@ public class MoviePage {
     }
 
     private JPanel createGeneralMoviesPanel() {
+
         JPanel generalMoviesPanel = new JPanel(new BorderLayout());
+
         String[] columns = { "ID", "Movie Name", "Director", "Release Year", "Running Time", "Add Watchlist" };
 
         generalMoviesModel = new DefaultTableModel(new String[][] {}, columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 5;
             }
         };
         MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] {
@@ -62,10 +63,19 @@ public class MoviePage {
                 movie.getRunningTime() }));
 
         generalMoviesTable = new JTable(generalMoviesModel);
+        generalMoviesTable.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1) {
+                // Check if the current column index is not the button column
+                if (generalMoviesTable.getSelectedColumn() != 5) {
+                    super.setSelectionInterval(index0, index1);
+                }
+            }
+        });
         generalMoviesTable.setRowHeight(25);
         setColumnWidths(generalMoviesTable, new int[] { 50, 150, 150, 100, 100, 80 });
-        generalMoviesTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer());
-
+        generalMoviesTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer("+"));
+        generalMoviesTable.getColumnModel().getColumn(5).setCellEditor(new ButtonCellEditor(this, 0));
         generalMoviesPanel.add(new JScrollPane(generalMoviesTable), BorderLayout.CENTER);
         generalMoviesPanel.add(
                 createSortPanel("Sort General Movies By: ",
@@ -83,7 +93,7 @@ public class MoviePage {
         watchlistModel = new DefaultTableModel(new String[][] {}, columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 5;
             }
         };
         MovieDatabase.getMoviesByIndex(user.getWatchList().getSet())
@@ -92,10 +102,19 @@ public class MoviePage {
                         movie.getRunningTime() }));
 
         watchlistTable = new JTable(watchlistModel);
+        watchlistTable.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1) {
+                // Check if the current column index is not the button column
+                if (watchlistTable.getSelectedColumn() != 5) {
+                    super.setSelectionInterval(index0, index1);
+                }
+            }
+        });
         watchlistTable.setRowHeight(25);
         setColumnWidths(watchlistTable, new int[] { 50, 150, 150, 100, 100, 80 });
-        watchlistTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer2());
-
+        watchlistTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer("-"));
+        watchlistTable.getColumnModel().getColumn(5).setCellEditor(new ButtonCellEditor(this, 1));
         watchlistPanel.add(new JScrollPane(watchlistTable), BorderLayout.CENTER);
         watchlistPanel.add(
                 createSortPanel("Sort Watchlist By: ",
@@ -144,8 +163,20 @@ public class MoviePage {
         }
     }
 
-    private void refreshTables() {
-        // Refresh logic for tables
+    public void refreshTables() {
+        generalMoviesModel.setRowCount(0);
+        watchlistModel.setRowCount(0);
+
+        MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] {
+                movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime()
+        }));
+
+        MovieDatabase.getMoviesByIndex(user.getWatchList().getSet())
+                .forEach(movie -> watchlistModel.addRow(new Object[] {
+                        movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
+                        movie.getRunningTime()
+                }));
+
     }
 
     private JPanel createSortPanel(String labelText, JComboBox<String> comboBox) {
@@ -167,29 +198,18 @@ public class MoviePage {
     }
 
     class ButtonCellRenderer extends JButton implements javax.swing.table.TableCellRenderer {
-        public ButtonCellRenderer() {
+        private String text;
+
+        public ButtonCellRenderer(String s) {
+            this.text = s;
             setOpaque(true);
         }
 
         @Override
         public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                 boolean hasFocus, int row, int column) {
-            setText("+");
+            setText(this.text);
             return this;
         }
     }
-
-    class ButtonCellRenderer2 extends JButton implements javax.swing.table.TableCellRenderer {
-        public ButtonCellRenderer2() {
-            setOpaque(true);
-        }
-
-        @Override
-        public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column) {
-            setText("-");
-            return this;
-        }
-    }
-
 }

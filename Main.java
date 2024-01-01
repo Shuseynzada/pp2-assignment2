@@ -1,16 +1,17 @@
-import GUI.LoginPage;
+import Exceptions.IncorrectPasswordException;
+import Exceptions.UserNotFoundException;
+import GUI.MoviePage;
+import UserManagement.User;
 
 public class Main {
     public static void main(String[] args) {
-        new LoginPage();
-        // try {
-        // User samxal = User.login("samxal", "Samxal123");
-        // Moviepage.moviePage(samxal);
-        // } catch (UserNotFoundException e) {
-        // e.printStackTrace();
-        // } catch (IncorrectPasswordException e) {
-        // e.printStackTrace();
-        // }
-
+        try {
+            User samxal = User.login("samxal", "Samxal123");
+            new MoviePage(samxal);
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        } catch (IncorrectPasswordException e) {
+            e.printStackTrace();
+        }
     }
 }
