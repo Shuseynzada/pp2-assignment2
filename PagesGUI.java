@@ -24,74 +24,73 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class PagesGUI {
     static boolean isLoginSuccess = false;
-    static void loginPage(){ 
-        JFrame frame = new JFrame(); 
-        JLabel l, l1, l2, l3; 
-        JButton login, signup; 
-        JTextField usernameField; 
-        JPasswordField passwordField;  
-        
-        l1 = new JLabel("Welcome! Login"); 
-        l1.setBounds(50,0, 100, 30); 
 
-        l2 = new JLabel("Username"); 
-        l2.setBounds(50,30, 100, 30); 
-        usernameField = new JTextField(); 
-        usernameField.setBounds(50,50, 220, 30); 
+    static void loginPage() {
+        JFrame frame = new JFrame();
+        JLabel l, l1, l2, l3;
+        JButton login, signup;
+        JTextField usernameField;
+        JPasswordField passwordField;
 
-        l3 = new JLabel("Password"); 
-        l3.setBounds(50,80,100,30); 
-        passwordField = new JPasswordField(); 
-        passwordField.setBounds(50,100, 220, 30); 
+        l1 = new JLabel("Welcome! Login");
+        l1.setBounds(50, 0, 100, 30);
 
-        login = new JButton("Login"); 
-        login.setBounds(50,130, 100, 30); 
-        signup = new JButton("Sign Up"); 
-        signup.setBounds(170,130, 100, 30); 
+        l2 = new JLabel("Username");
+        l2.setBounds(50, 30, 100, 30);
+        usernameField = new JTextField();
+        usernameField.setBounds(50, 50, 220, 30);
 
-        l = new JLabel(); 
-        l.setBounds(50,160,300,30); 
+        l3 = new JLabel("Password");
+        l3.setBounds(50, 80, 100, 30);
+        passwordField = new JPasswordField();
+        passwordField.setBounds(50, 100, 220, 30);
 
-        login.addActionListener((ActionListener) new ActionListener(){
+        login = new JButton("Login");
+        login.setBounds(50, 130, 100, 30);
+        signup = new JButton("Sign Up");
+        signup.setBounds(170, 130, 100, 30);
+
+        l = new JLabel();
+        l.setBounds(50, 160, 300, 30);
+
+        login.addActionListener((ActionListener) new ActionListener() {
 
             @Override
-            public void actionPerformed(ActionEvent e) { 
-                String password  = new String(passwordField.getPassword());
+            public void actionPerformed(ActionEvent e) {
+                String password = new String(passwordField.getPassword());
                 try {
                     User user = User.login(usernameField.getText(), password);
-                    if (user == null) { 
-                        l.setText("Login failed"); 
+                    if (user == null) {
+                        l.setText("Login failed");
                     } else {
                         frame.dispose();
                         moviePage();
                     }
                 } catch (UserNotFoundException ex) {
-                    JOptionPane.showMessageDialog(frame, "User not found: " + ex.getMessage(), "Login Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "User not found: " + ex.getMessage(), "Login Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-
-        signup.addActionListener(new ActionListener(){
+        signup.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 String password = new String(passwordField.getPassword());
                 try {
                     User newUser = User.register(usernameField.getText(), password);
-                    UsersDatabase.updateFile(); 
+                    UsersDatabase.updateFile();
                 } catch (UsernameAlreadyExistsException ex) {
-                    JOptionPane.showMessageDialog(frame, "Username already exists: " + ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Username already exists: " + ex.getMessage(),
+                            "Registration Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        frame.add(l); 
+        frame.add(l);
         frame.add(l1);
         frame.add(l2);
         frame.add(l3);
@@ -99,20 +98,19 @@ public class PagesGUI {
         frame.add(signup);
         frame.add(usernameField);
         frame.add(passwordField);
-        frame.setSize(400,400); 
+        frame.setSize(400, 400);
         frame.setLayout(null);
-        frame.setVisible(true); 
+        frame.setVisible(true);
     }
 
     static void moviePage() {
-        JFrame frame = new JFrame("Movie Page"); 
-        String[] columns = {"Movie Name", "Director", "Release Year", "Running Time"};
-        String[][] generalMoviesData = {{}}; 
-        String[][] watchlistData = {  };
+        JFrame frame = new JFrame("Movie Page");
+        String[] columns = { "ID", "Movie Name", "Director", "Release Year", "Running Time" };
+        String[][] generalMoviesData = {};
+        String[][] watchlistData = {};
 
         JLabel generalMoviesLabel = new JLabel("General Movies");
         JLabel watchlistLabel = new JLabel("Watchlist");
-
 
         Font titleFont = new Font(generalMoviesLabel.getFont().getName(), Font.BOLD, 18);
         generalMoviesLabel.setFont(titleFont);
@@ -121,10 +119,12 @@ public class PagesGUI {
         DefaultTableModel generalMoviesModel = new DefaultTableModel(generalMoviesData, columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; 
+                return false;
             }
         };
-        MovieDatabase.getMovies().stream().forEach(movie->generalMoviesModel.addRow(new Object[]{movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime()}));
+        MovieDatabase.getMovies().stream()
+                .forEach(movie -> generalMoviesModel.addRow(new Object[] { movie.getId(), movie.getTitle(),
+                        movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime() }));
 
         JTable generalMoviesTable = new JTable(generalMoviesModel);
         JScrollPane generalMoviesScrollPane = new JScrollPane(generalMoviesTable);
@@ -132,7 +132,7 @@ public class PagesGUI {
         DefaultTableModel watchlistModel = new DefaultTableModel(watchlistData, columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; 
+                return false;
             }
         };
         JTable watchlistTable = new JTable(watchlistModel);
@@ -170,40 +170,37 @@ public class PagesGUI {
             }
         });
 
-        
+        // ComboBox for sorting General Movies
+        String[] sortByOptions = { "Name", "Director", "Release Year", "Running Time" };
+        JComboBox<String> generalMoviesSortBy = new JComboBox<>(sortByOptions);
+        generalMoviesSortBy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedSortOption = (String) generalMoviesSortBy.getSelectedItem();
+                // if(selectedSortOption.equals("Sort by Name")) sortGeneralMoviesByName();
+            }
+        });
 
-// ComboBox for sorting General Movies
-String[] sortByOptions = {"Name", "Director", "Release Year", "Running Time"};
-JComboBox<String> generalMoviesSortBy = new JComboBox<>(sortByOptions);
-generalMoviesSortBy.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String selectedSortOption = (String) generalMoviesSortBy.getSelectedItem();
-        // if(selectedSortOption.equals("Sort by Name")) sortGeneralMoviesByName();
-    }
-});
+        // ComboBox for sorting Watchlist
+        JComboBox<String> watchlistSortBy = new JComboBox<>(sortByOptions);
+        watchlistSortBy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedSortOption = (String) watchlistSortBy.getSelectedItem();
+                // if(selectedSortOption.equals("Sort by Name")) sortWatchlistByName();
+            }
+        });
 
-// ComboBox for sorting Watchlist
-JComboBox<String> watchlistSortBy = new JComboBox<>(sortByOptions);
-watchlistSortBy.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String selectedSortOption = (String) watchlistSortBy.getSelectedItem();
-        //if(selectedSortOption.equals("Sort by Name")) sortWatchlistByName();
-    }
-});
+        JPanel generalMoviesSortPanel = new JPanel();
+        generalMoviesSortPanel.add(new JLabel("Sort General Movies By: "));
+        generalMoviesSortPanel.add(generalMoviesSortBy);
 
-JPanel generalMoviesSortPanel = new JPanel();
-generalMoviesSortPanel.add(new JLabel("Sort General Movies By: "));
-generalMoviesSortPanel.add(generalMoviesSortBy);
+        JPanel watchlistSortPanel = new JPanel();
+        watchlistSortPanel.add(new JLabel("Sort Watchlist By: "));
+        watchlistSortPanel.add(watchlistSortBy);
 
-JPanel watchlistSortPanel = new JPanel();
-watchlistSortPanel.add(new JLabel("Sort Watchlist By: "));
-watchlistSortPanel.add(watchlistSortBy);
-
-generalMoviesPanel.add(generalMoviesSortPanel, BorderLayout.SOUTH);
-watchlistPanel.add(watchlistSortPanel, BorderLayout.SOUTH);
-
+        generalMoviesPanel.add(generalMoviesSortPanel, BorderLayout.SOUTH);
+        watchlistPanel.add(watchlistSortPanel, BorderLayout.SOUTH);
 
         addMoviePanel.add(new JLabel("Title: "));
         addMoviePanel.add(title);
@@ -223,6 +220,6 @@ watchlistPanel.add(watchlistSortPanel, BorderLayout.SOUTH);
         frame.add(mainPanel);
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true); 
+        frame.setVisible(true);
     }
 }
