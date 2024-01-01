@@ -1,4 +1,4 @@
-package MovieManagement;
+package Exceptions;
 
 public class InvalidReleaseYearException extends Exception {
     public InvalidReleaseYearException(String message) {

@@ -1,4 +1,4 @@
-package UserManagement;
+package Exceptions;
 
 public class UsernameAlreadyExistsException extends Exception {
     public UsernameAlreadyExistsException(String message) {

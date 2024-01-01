@@ -1,4 +1,4 @@
-package UserManagement;
+package Exceptions;
 
 public class InvalidPasswordDigitException extends Exception {
     public InvalidPasswordDigitException(String message) {

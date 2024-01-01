@@ -12,13 +12,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import MovieManagement.InvalidReleaseYearException;
-import MovieManagement.InvalidRunningTimeException;
+import Exceptions.*;
 import MovieManagement.Movie;
 import MovieManagement.MovieDatabase;
 import UserManagement.User;
-import UserManagement.UserNotFoundException;
-import UserManagement.UsernameAlreadyExistsException;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -72,14 +69,13 @@ public class PagesGUI {
                         moviePage(user);
                     }
                 } catch (UserNotFoundException ex) {
-                    JOptionPane.showMessageDialog(frame, "User not found: " + ex.getMessage(), "Login Error",
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Login Error",
                             JOptionPane.ERROR_MESSAGE);
-                }
+                } 
             }
         });
 
         signup.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 String password = new String(passwordField.getPassword());
                 try {
@@ -91,11 +87,19 @@ public class PagesGUI {
                         moviePage(newUser);
                     }
                 } catch (UsernameAlreadyExistsException ex) {
-                    JOptionPane.showMessageDialog(frame, "Username already exists: " + ex.getMessage(),
-                            "Registration Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                } catch (InvalidPasswordDigitException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                } catch (InvalidPasswordLengthException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                } catch (InvalidPasswordUppercaseException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                } catch (InvalidUsernameException ex) {
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+        
 
         frame.add(l);
         frame.add(l1);

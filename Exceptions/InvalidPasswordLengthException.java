@@ -1,4 +1,4 @@
-package UserManagement;
+package Exceptions;
 
 public class InvalidPasswordLengthException extends Exception {
         public InvalidPasswordLengthException(String message) {

@@ -1,5 +1,7 @@
 package UserManagement;
 
+import Exceptions.*;
+
 public class User {
     private int id;
     private String username, password;
@@ -45,26 +47,35 @@ public class User {
 
 
     // Setters
-    public boolean setName(String newUsername, String password) throws InvalidUsernameException, IncorrectPasswordException {
-        if (newUsername == null || newUsername.isEmpty()) {
-            throw new InvalidUsernameException("Username cannot be null or empty.");
+    public boolean setName(String newUsername, String password) {
+        try {
+            if (newUsername == null || newUsername.isEmpty()) {
+                throw new InvalidUsernameException("Username cannot be null or empty.");
+            }
+            if (!this.password.equals(password)) {
+                throw new IncorrectPasswordException("Password doesn't match.");
+            }
+            this.username = newUsername;
+            UsersDatabase.updateFile();
+            return true;
+        } catch (InvalidUsernameException | IncorrectPasswordException e) {
+            System.out.println(e.getMessage());
+            return false;
         }
-        if (!this.password.equals(password)) {
-            throw new IncorrectPasswordException("Password doesn't match.");
-        }
-        this.username = newUsername;
-        UsersDatabase.updateFile();
-        return true;
     }
 
-    public boolean setPassword(String newPassword, String oldPassword) throws IncorrectPasswordException {
-        if (!this.password.equals(oldPassword)) {
-            throw new IncorrectPasswordException("Old password is incorrect.");
+    public boolean setPassword(String newPassword, String oldPassword) {
+        try {
+            if (!this.password.equals(oldPassword)) {
+                throw new IncorrectPasswordException("Old password is incorrect.");
+            }
+            this.password = newPassword;
+            UsersDatabase.updateFile();
+            return true;
+        } catch (IncorrectPasswordException e) {
+            System.out.println(e.getMessage());
+            return false;
         }
-
-        this.password = newPassword;
-        UsersDatabase.updateFile();
-        return true;
     }
 
     // Database methods
@@ -82,7 +93,7 @@ public class User {
         throw new UserNotFoundException("No such User found");
     }
 
-    public static User register(String username, String password) throws UsernameAlreadyExistsException {
+    public static User register(String username, String password) throws UsernameAlreadyExistsException, InvalidPasswordLengthException, InvalidPasswordDigitException, InvalidPasswordUppercaseException, InvalidUsernameException {
         boolean userFlag = false;
         for (User user : UsersDatabase.users) {
             if (user.username.equals(username)) {
@@ -91,20 +102,16 @@ public class User {
             }
         }
 
+        if (username == null || username.isEmpty()) {
+            throw new InvalidUsernameException("Username cannot be null or empty.");
+        }
         if (userFlag) {
             throw new UsernameAlreadyExistsException("Username already exists");
         }
-
-        try {
-            if (!isPasswordValid(password)) {
-                System.out.println("Password is not valid");
-                return new User("true", null);
-            }
-        } catch (InvalidPasswordLengthException | InvalidPasswordDigitException | InvalidPasswordUppercaseException e) {
-            System.out.println(e.getMessage());
-            return new User("error", null);
+        if (!isPasswordValid(password)) {
+            System.out.println("Password is not valid");
+            return new User("true", null);
         }
-
         return new User(UsersDatabase.users.size(), username, password, true);
 
     }

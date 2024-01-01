@@ -1,5 +1,7 @@
 package MovieManagement;
 
+import Exceptions.*;
+
 public class Movie {
     private int id;
     private String title;

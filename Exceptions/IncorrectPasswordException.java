@@ -1,4 +1,4 @@
-package UserManagement;
+package Exceptions;
 
 public class IncorrectPasswordException extends Exception{
     public IncorrectPasswordException(String message) {
