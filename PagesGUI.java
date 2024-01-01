@@ -12,6 +12,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import MovieManagement.InvalidReleaseYearException;
+import MovieManagement.InvalidRunningTimeException;
+import MovieManagement.Movie;
 import MovieManagement.MovieDatabase;
 import UserManagement.User;
 import UserManagement.UserNotFoundException;
@@ -161,17 +164,24 @@ public class PagesGUI {
         JTextField year = new JTextField(20);
         JTextField runningTime = new JTextField(20);
 
-        JButton addToFavorite = new JButton("Add to Favorite");
-        addToFavorite.addActionListener(new ActionListener() {
+        JButton addMovie = new JButton("Add Movie");
+        addMovie.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to add new movie to the database
-                // Retrieve data from text fields (title, director, year, runningTime)
-                // Create Movie object and add it to the database
+            public void actionPerformed(ActionEvent e) { 
+                Movie m;
+                try {
+                    m = new Movie(title.getText(), director.getText(),Integer.parseInt(year.getText()), Integer.parseInt(runningTime.getText()));
+                    MovieDatabase.addToFile(m);
+                } catch (NumberFormatException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidRunningTimeException e1) {
+                    e1.printStackTrace();
+                } catch (InvalidReleaseYearException e1) {
+                    e1.printStackTrace();
+                } 
             }
-        });
+        }); 
 
-        
 
 // ComboBox for sorting General Movies
 String[] sortByOptions = {"Name", "Director", "Release Year", "Running Time"};
@@ -214,7 +224,7 @@ watchlistPanel.add(watchlistSortPanel, BorderLayout.SOUTH);
         addMoviePanel.add(year);
         addMoviePanel.add(new JLabel("Running Time: "));
         addMoviePanel.add(runningTime);
-        addMoviePanel.add(addToFavorite);
+        addMoviePanel.add(addMovie);
 
         // Create main panel and add components
         JPanel mainPanel = new JPanel(new BorderLayout());
