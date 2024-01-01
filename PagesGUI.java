@@ -64,13 +64,14 @@ public class PagesGUI {
                     frame.dispose();
                     moviePage(user);
                 } catch (IncorrectPasswordException ex) {
-                    JOptionPane.showMessageDialog(frame, "Incorrect password: " + ex.getMessage(), "Login Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Incorrect password: " + ex.getMessage(), "Login Error",
+                            JOptionPane.ERROR_MESSAGE);
                 } catch (UserNotFoundException ex) {
-                    JOptionPane.showMessageDialog(frame, "User not found: " + ex.getMessage(), "Login Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "User not found: " + ex.getMessage(), "Login Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-        
 
         signup.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -84,19 +85,23 @@ public class PagesGUI {
                         moviePage(newUser);
                     }
                 } catch (UsernameAlreadyExistsException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error",
+                            JOptionPane.ERROR_MESSAGE);
                 } catch (InvalidPasswordDigitException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error",
+                            JOptionPane.ERROR_MESSAGE);
                 } catch (InvalidPasswordLengthException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error",
+                            JOptionPane.ERROR_MESSAGE);
                 } catch (InvalidPasswordUppercaseException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error",
+                            JOptionPane.ERROR_MESSAGE);
                 } catch (InvalidUsernameException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Registration Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-        
 
         frame.add(l);
         frame.add(l1);
@@ -113,7 +118,7 @@ public class PagesGUI {
 
     static void moviePage(User user) {
         JFrame frame = new JFrame("Movie Page");
-        String[] columns = { "ID", "Movie Name", "Director", "Release Year", "Running Time" ,"Add Watchlist"};
+        String[] columns = { "ID", "Movie Name", "Director", "Release Year", "Running Time", "Add Watchlist" };
         String[][] generalMoviesData = {};
         String[][] watchlistData = {};
 
@@ -153,9 +158,10 @@ public class PagesGUI {
             public ButtonCellRenderer() {
                 setOpaque(true);
             }
-        
+
             @Override
-            public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 setText("+");
                 return this;
             }
@@ -165,18 +171,19 @@ public class PagesGUI {
             public ButtonCellRenderer2() {
                 setOpaque(true);
             }
-        
+
             @Override
-            public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
                 setText("-");
                 return this;
             }
         }
-        
+
         // Set a custom renderer for the last column (index 5 for a zero-based index)
         generalMoviesTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer());
         watchlistTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer2());
-        
+
         JPanel tablesPanel = new JPanel(new GridLayout(1, 2));
         JPanel generalMoviesPanel = new JPanel(new BorderLayout());
         JPanel watchlistPanel = new JPanel(new BorderLayout());
@@ -202,55 +209,64 @@ public class PagesGUI {
         JButton addMovie = new JButton("Add Movie");
         addMovie.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { 
+            public void actionPerformed(ActionEvent e) {
                 Movie m;
                 try {
-                    m = new Movie(title.getText(), director.getText(),Integer.parseInt(year.getText()), Integer.parseInt(runningTime.getText()));
+                    m = new Movie(title.getText(), director.getText(), Integer.parseInt(year.getText()),
+                            Integer.parseInt(runningTime.getText()));
                     MovieDatabase.addToFile(m);
                     DefaultTableModel generalMoviesModel = (DefaultTableModel) generalMoviesTable.getModel();
                     generalMoviesModel.setRowCount(0); // Clear existing data
-                    MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] { movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime() }));
-            
+                    MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] { movie.getId(),
+                            movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime() }));
+
                     DefaultTableModel watchlistModel = (DefaultTableModel) watchlistTable.getModel();
                     watchlistModel.setRowCount(0); // Clear existing data
-                    MovieDatabase.getMoviesByIndex(user.getWatchList().getSet()).forEach(movie -> watchlistModel.addRow(new Object[] { movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime() }));
-            
-            frame.revalidate();
-            frame.repaint();
-                } catch (NumberFormatException e1) {
-                    e1.printStackTrace();
+                    MovieDatabase.getMoviesByIndex(user.getWatchList().getSet())
+                            .forEach(movie -> watchlistModel.addRow(new Object[] { movie.getId(), movie.getTitle(),
+                                    movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime() }));
+
+                    frame.revalidate();
+                    frame.repaint();
                 } catch (InvalidRunningTimeException e1) {
+                    JOptionPane.showMessageDialog(frame, "Invalid Running Time: " + e1.getMessage(), "Add Movie Error",
+                            JOptionPane.ERROR_MESSAGE);
                     e1.printStackTrace();
                 } catch (InvalidReleaseYearException e1) {
+                    JOptionPane.showMessageDialog(frame, "Invalid Release year: " + e1.getMessage(), "Add Movie Error",
+                            JOptionPane.ERROR_MESSAGE);
                     e1.printStackTrace();
-                } 
+                } catch (NumberFormatException e1) {
+                    JOptionPane.showMessageDialog(frame, "Number format error: " + e1.getMessage(), "Add Movie Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                }
             }
-        }); 
+        });
 
-// Set row height
-generalMoviesTable.setRowHeight(25); // Change the value (25) to adjust the row height
-// Set column width for each column (index 0 to 5 in this case)
-int[] columnWidths = { 50, 150, 150, 100, 100, 80 }; // Adjust these values to set column widths
-for (int i = 0; i < columns.length; i++) {
-    generalMoviesTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
-}
-watchlistTable.setRowHeight(25); // Change the value (25) to adjust the row height
-// Set column width for each column (index 0 to 5 in this case)
-for (int i = 0; i < columns.length; i++) {
-    watchlistTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
-}
+        // Set row height
+        generalMoviesTable.setRowHeight(25); // Change the value (25) to adjust the row height
+        // Set column width for each column (index 0 to 5 in this case)
+        int[] columnWidths = { 50, 150, 150, 100, 100, 80 }; // Adjust these values to set column widths
+        for (int i = 0; i < columns.length; i++) {
+            generalMoviesTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+        }
+        watchlistTable.setRowHeight(25); // Change the value (25) to adjust the row height
+        // Set column width for each column (index 0 to 5 in this case)
+        for (int i = 0; i < columns.length; i++) {
+            watchlistTable.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+        }
 
-
-// ComboBox for sorting General Movies
-String[] sortByOptions = {"Name", "Director", "Release Year", "Running Time"};
-JComboBox<String> generalMoviesSortBy = new JComboBox<>(sortByOptions);
-generalMoviesSortBy.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        String selectedSortOption = (String) generalMoviesSortBy.getSelectedItem();
-        // if(selectedSortOption.equals("Sort by Name")) sortGeneralMoviesByName();
-    }
-});
+        // ComboBox for sorting General Movies
+        String[] sortByOptions = { "Name", "Director", "Release Year", "Running Time" };
+        JComboBox<String> generalMoviesSortBy = new JComboBox<>(sortByOptions);
+        generalMoviesSortBy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedSortOption = (String) generalMoviesSortBy.getSelectedItem();
+                // if(selectedSortOption.equals("Sort by Name")) sortGeneralMoviesByName();
+            }
+        });
 
         // ComboBox for sorting Watchlist
         JComboBox<String> watchlistSortBy = new JComboBox<>(sortByOptions);
