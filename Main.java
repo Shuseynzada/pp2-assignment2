@@ -5,7 +5,7 @@ import UserManagement.UsersDatabase;
 
 public class Main {
     public static void main(String[] args) {
-        // PagesGUI.loginPage();
+        PagesGUI.moviePage();
         User samxal;
         try {
             samxal = User.login("samxal", "Samxal123");
@@ -17,7 +17,7 @@ public class Main {
             MovieDatabase.getMoviesByIndex(samxal.getWatchList().getSet()).stream().forEach(m->System.out.println(m));
         } catch (UserNotFoundException e) {
             e.printStackTrace();
-        }
+        } 
 
     }
 }

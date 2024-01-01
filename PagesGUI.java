@@ -1,22 +1,28 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
-import MovieManagement.InvalidReleaseYearException;
-import MovieManagement.InvalidRunningTimeException;
-import MovieManagement.Movie;
-import MovieManagement.MovieDatabase;
-import UserManagement.IncorrectPasswordException;
 import UserManagement.User;
 import UserManagement.UserNotFoundException;
 import UserManagement.UsernameAlreadyExistsException;
 import UserManagement.UsersDatabase;
+import UserManagement.Watchlist;
+
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class PagesGUI {
     static boolean isLoginSuccess = false;
@@ -94,68 +100,94 @@ public class PagesGUI {
         frame.setVisible(true); 
     }
 
-    static void moviePage(){ 
-        JFrame frame = new JFrame(); 
-        JLabel l1, l2, l3, l4,l5; 
-        JButton AddtoFavorite; 
-        JTextField title, director,year, time; 
-        
-        l1 = new JLabel("Welcome! Movie Page"); 
-        l1.setBounds(50,0, 300, 30); 
+    static void moviePage() {
+        JFrame frame = new JFrame("Movie Page");
 
-        l2 = new JLabel("Title"); 
-        l2.setBounds(50,30, 100, 30); 
-        title = new JTextField(); 
-        title.setBounds(50,50, 200, 30); 
+        String[] columns = {"Movie Name", "Director", "Release Year", "Running Time"};
+        String[][] generalMoviesData = {
+                {"Movie1", "Director1", "Year1", "Running Time1"},
+                {"Movie2", "Director2", "Year2", "Running Time2"}
+        };
+        String[][] watchlistData = { 
 
-        l3 = new JLabel("Director"); 
-        l3.setBounds(50,80,100,30); 
-        director = new JTextField(); 
-        director.setBounds(50,100, 200, 30); 
+        };
 
-        l4 = new JLabel("Release Year"); 
-        l4.setBounds(50,130,100,30); 
-        year = new JTextField(); 
-        year.setBounds(50,150, 200, 30); 
+        JLabel generalMoviesLabel = new JLabel("General Movies");
+        JLabel watchlistLabel = new JLabel("Watchlist");
 
-        l5 = new JLabel("Running Time"); 
-        l5.setBounds(50,180,100,30); 
-        time = new JTextField(); 
-        time.setBounds(50,200, 200, 30); 
 
-        AddtoFavorite = new JButton("Add to Favorite"); 
-        AddtoFavorite.setBounds(50,240, 200, 30); 
+        Font titleFont = new Font(generalMoviesLabel.getFont().getName(), Font.BOLD, 18);
+        generalMoviesLabel.setFont(titleFont);
+        watchlistLabel.setFont(titleFont);
 
-        AddtoFavorite.addActionListener(new ActionListener() {
-
+        DefaultTableModel generalMoviesModel = new DefaultTableModel(generalMoviesData, columns) {
             @Override
-            public void actionPerformed(ActionEvent e) { 
-                Movie m;
-                try {
-                    m = new Movie(title.getText(), director.getText(),Integer.parseInt(year.getText()), Integer.parseInt(time.getText()));
-                    MovieDatabase.addToFile(m);
-                } catch (NumberFormatException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidRunningTimeException e1) {
-                    e1.printStackTrace();
-                } catch (InvalidReleaseYearException e1) {
-                    e1.printStackTrace();
-                } 
+            public boolean isCellEditable(int row, int column) {
+                return false; 
             }
-        }); 
-  
-        frame.add(AddtoFavorite);
-        frame.add(l1);
-        frame.add(l2);
-        frame.add(l3);
-        frame.add(l4); 
-        frame.add(l5);
-        frame.add(title);
-        frame.add(year);
-        frame.add(director); 
-        frame.add(time);
-        frame.setSize(400,400); 
-        frame.setLayout(null);
-        frame.setVisible(true);  
+        };
+        JTable generalMoviesTable = new JTable(generalMoviesModel);
+        JScrollPane generalMoviesScrollPane = new JScrollPane(generalMoviesTable);
+
+        DefaultTableModel watchlistModel = new DefaultTableModel(watchlistData, columns) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; 
+            }
+        };
+        JTable watchlistTable = new JTable(watchlistModel);
+        JScrollPane watchlistScrollPane = new JScrollPane(watchlistTable);
+
+        JPanel tablesPanel = new JPanel(new GridLayout(1, 2));
+        JPanel generalMoviesPanel = new JPanel(new BorderLayout());
+        JPanel watchlistPanel = new JPanel(new BorderLayout());
+
+        generalMoviesPanel.add(generalMoviesLabel, BorderLayout.NORTH);
+        generalMoviesPanel.add(generalMoviesScrollPane, BorderLayout.CENTER);
+
+        watchlistPanel.add(watchlistLabel, BorderLayout.NORTH);
+        watchlistPanel.add(watchlistScrollPane, BorderLayout.CENTER);
+
+        tablesPanel.add(generalMoviesPanel);
+        tablesPanel.add(watchlistPanel);
+
+        JPanel addMoviePanel = new JPanel();
+        addMoviePanel.setLayout((LayoutManager) new BoxLayout(addMoviePanel, BoxLayout.Y_AXIS));
+        addMoviePanel.setBorder(BorderFactory.createTitledBorder("Add New Movie"));
+
+        JTextField title = new JTextField(20);
+        JTextField director = new JTextField(20);
+        JTextField year = new JTextField(20);
+        JTextField runningTime = new JTextField(20);
+
+        JButton addToFavorite = new JButton("Add to Favorite");
+        addToFavorite.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Code to add new movie to the database
+                // Retrieve data from text fields (title, director, year, runningTime)
+                // Create Movie object and add it to the database
+            }
+        });
+
+        addMoviePanel.add(new JLabel("Title: "));
+        addMoviePanel.add(title);
+        addMoviePanel.add(new JLabel("Director: "));
+        addMoviePanel.add(director);
+        addMoviePanel.add(new JLabel("Release Year: "));
+        addMoviePanel.add(year);
+        addMoviePanel.add(new JLabel("Running Time: "));
+        addMoviePanel.add(runningTime);
+        addMoviePanel.add(addToFavorite);
+
+        // Create main panel and add components
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(tablesPanel, BorderLayout.CENTER);
+        mainPanel.add(addMoviePanel, BorderLayout.SOUTH);
+
+        frame.add(mainPanel);
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true); 
     }
 }
