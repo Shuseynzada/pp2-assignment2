@@ -179,6 +179,16 @@ public class PagesGUI {
                 try {
                     m = new Movie(title.getText(), director.getText(),Integer.parseInt(year.getText()), Integer.parseInt(runningTime.getText()));
                     MovieDatabase.addToFile(m);
+                    DefaultTableModel generalMoviesModel = (DefaultTableModel) generalMoviesTable.getModel();
+                    generalMoviesModel.setRowCount(0); // Clear existing data
+                    MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] { movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime() }));
+            
+                    DefaultTableModel watchlistModel = (DefaultTableModel) watchlistTable.getModel();
+                    watchlistModel.setRowCount(0); // Clear existing data
+                    MovieDatabase.getMoviesByIndex(user.getWatchList().getSet()).forEach(movie -> watchlistModel.addRow(new Object[] { movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime() }));
+            
+            frame.revalidate();
+            frame.repaint();
                 } catch (NumberFormatException e1) {
                     e1.printStackTrace();
                 } catch (InvalidRunningTimeException e1) {
