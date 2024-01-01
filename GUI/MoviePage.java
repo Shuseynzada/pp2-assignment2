@@ -4,9 +4,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Comparator;
+import java.util.function.Predicate;
 
 import Exceptions.InvalidReleaseYearException;
 import Exceptions.InvalidRunningTimeException;
+import GUI.MoviePage.ButtonCellRenderer;
 import MovieManagement.Movie;
 import MovieManagement.MovieDatabase;
 import UserManagement.User;
@@ -19,7 +22,7 @@ public class MoviePage {
     private DefaultTableModel generalMoviesModel;
     private DefaultTableModel watchlistModel;
     private JTextField titleField, directorField, yearField, runningTimeField;
-    private JComboBox<String> generalMoviesSortBy, watchlistSortBy;
+    public String userSelectedSortBy = "", userSelectedFilterBy = "";
 
     public MoviePage(User user) {
         this.user = user;
@@ -58,9 +61,11 @@ public class MoviePage {
                 return column == 5;
             }
         };
-        MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] {
-                movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
-                movie.getRunningTime() }));
+
+        MovieDatabase.getMovies().stream()
+                .forEach(movie -> generalMoviesModel.addRow(new Object[] {
+                        movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
+                        movie.getRunningTime() }));
 
         generalMoviesTable = new JTable(generalMoviesModel);
         generalMoviesTable.setSelectionModel(new DefaultListSelectionModel() {
@@ -79,8 +84,7 @@ public class MoviePage {
         generalMoviesPanel.add(new JScrollPane(generalMoviesTable), BorderLayout.CENTER);
         generalMoviesPanel.add(
                 createSortPanel("Sort General Movies By: ",
-                        generalMoviesSortBy = new JComboBox<>(
-                                new String[] { "Name", "Director", "Release Year", "Running Time" })),
+                        new JComboBox<>(new String[] { "Name", "Director", "Release Year", "Running Time" })),
                 BorderLayout.SOUTH);
 
         return generalMoviesPanel;
@@ -118,8 +122,7 @@ public class MoviePage {
         watchlistPanel.add(new JScrollPane(watchlistTable), BorderLayout.CENTER);
         watchlistPanel.add(
                 createSortPanel("Sort Watchlist By: ",
-                        watchlistSortBy = new JComboBox<>(
-                                new String[] { "Name", "Director", "Release Year", "Running Time" })),
+                        new JComboBox<>(new String[] { "Name", "Director", "Release Year", "Running Time" })),
                 BorderLayout.SOUTH);
 
         return watchlistPanel;
@@ -167,6 +170,15 @@ public class MoviePage {
         generalMoviesModel.setRowCount(0);
         watchlistModel.setRowCount(0);
 
+        System.out.println(userSelectedSortBy);
+        Comparator<Movie> sortLogic = getSortLogic(userSelectedSortBy);
+        Predicate<Movie> filterLogic = getFilterLogic(userSelectedFilterBy);
+
+        MovieDatabase.getMovies().stream().filter(filterLogic).sorted(sortLogic)
+                .forEach(movie -> generalMoviesModel.addRow(new Object[] {
+                        movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
+                        movie.getRunningTime() }));
+
         MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] {
                 movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime()
         }));
@@ -183,12 +195,49 @@ public class MoviePage {
         JPanel sortPanel = new JPanel();
         sortPanel.add(new JLabel(labelText));
         sortPanel.add(comboBox);
-        comboBox.addActionListener(this::sortMovies);
+        comboBox.addActionListener(e -> {
+            JComboBox<String> cb = (JComboBox<String>) e.getSource();
+            String selectedSortBy = (String) cb.getSelectedItem();
+
+            switch (selectedSortBy) {
+                case "Name":
+                    this.userSelectedSortBy = "Title";
+                    break;
+                case "Director":
+                    this.userSelectedSortBy = "Director";
+                    break;
+                case "Release Year":
+                    this.userSelectedSortBy = "Release Year";
+                    break;
+                case "Running Time":
+                    this.userSelectedSortBy = "Running Time";
+                    break;
+                default:
+                    this.userSelectedSortBy = ""; // No sorting
+            }
+
+            refreshTables();
+        });
         return sortPanel;
     }
 
-    private void sortMovies(ActionEvent e) {
-        // Sorting
+    public Predicate<Movie> getFilterLogic(String director) {
+        return movie -> true;
+    }
+
+    public Comparator<Movie> getSortLogic(String sortBy) {
+        switch (sortBy) {
+            case "Title":
+                return Comparator.comparing(Movie::getTitle);
+            case "Director":
+                return Comparator.comparing(Movie::getDirector);
+            case "Release Year":
+                return Comparator.comparing(Movie::getReleaseYear);
+            case "Running Time":
+                return Comparator.comparing(Movie::getRunningTime);
+            default:
+                return (movie1, movie2) -> 0;
+        }
     }
 
     private void setColumnWidths(JTable table, int[] widths) {
