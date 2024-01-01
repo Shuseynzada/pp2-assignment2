@@ -11,6 +11,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import MovieManagement.MovieDatabase;
 import UserManagement.User;
 import UserManagement.UserNotFoundException;
 import UserManagement.UsernameAlreadyExistsException;
@@ -23,6 +24,9 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class PagesGUI {
     static boolean isLoginSuccess = false;
@@ -101,16 +105,11 @@ public class PagesGUI {
     }
 
     static void moviePage() {
-        JFrame frame = new JFrame("Movie Page");
-
+        JFrame frame = new JFrame("Movie Page"); 
+        String filePath = "Resources/movies.csv";
         String[] columns = {"Movie Name", "Director", "Release Year", "Running Time"};
-        String[][] generalMoviesData = {
-                {"Movie1", "Director1", "Year1", "Running Time1"},
-                {"Movie2", "Director2", "Year2", "Running Time2"}
-        };
-        String[][] watchlistData = { 
-
-        };
+        String[][] generalMoviesData = {{}}; 
+        String[][] watchlistData = {  };
 
         JLabel generalMoviesLabel = new JLabel("General Movies");
         JLabel watchlistLabel = new JLabel("Watchlist");
@@ -126,6 +125,8 @@ public class PagesGUI {
                 return false; 
             }
         };
+        MovieDatabase.getMovies().stream().forEach(movie->generalMoviesModel.addRow(new Object[]{movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime()}));
+
         JTable generalMoviesTable = new JTable(generalMoviesModel);
         JScrollPane generalMoviesScrollPane = new JScrollPane(generalMoviesTable);
 

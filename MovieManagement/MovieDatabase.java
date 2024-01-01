@@ -66,4 +66,7 @@ public class MovieDatabase  {
     public static void listAllMovies() {
         movies.stream().forEach(m -> System.out.println(m));
     }
+    public static List<Movie> getMovies() {
+        return movies;
+    }
 }
