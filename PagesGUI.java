@@ -1,6 +1,7 @@
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -106,7 +107,6 @@ public class PagesGUI {
 
     static void moviePage() {
         JFrame frame = new JFrame("Movie Page"); 
-        String filePath = "Resources/movies.csv";
         String[] columns = {"Movie Name", "Director", "Release Year", "Running Time"};
         String[][] generalMoviesData = {{}}; 
         String[][] watchlistData = {  };
@@ -170,6 +170,41 @@ public class PagesGUI {
                 // Create Movie object and add it to the database
             }
         });
+
+        
+
+// ComboBox for sorting General Movies
+String[] sortByOptions = {"Name", "Director", "Release Year", "Running Time"};
+JComboBox<String> generalMoviesSortBy = new JComboBox<>(sortByOptions);
+generalMoviesSortBy.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String selectedSortOption = (String) generalMoviesSortBy.getSelectedItem();
+        // if(selectedSortOption.equals("Sort by Name")) sortGeneralMoviesByName();
+    }
+});
+
+// ComboBox for sorting Watchlist
+JComboBox<String> watchlistSortBy = new JComboBox<>(sortByOptions);
+watchlistSortBy.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String selectedSortOption = (String) watchlistSortBy.getSelectedItem();
+        //if(selectedSortOption.equals("Sort by Name")) sortWatchlistByName();
+    }
+});
+
+JPanel generalMoviesSortPanel = new JPanel();
+generalMoviesSortPanel.add(new JLabel("Sort General Movies By: "));
+generalMoviesSortPanel.add(generalMoviesSortBy);
+
+JPanel watchlistSortPanel = new JPanel();
+watchlistSortPanel.add(new JLabel("Sort Watchlist By: "));
+watchlistSortPanel.add(watchlistSortBy);
+
+generalMoviesPanel.add(generalMoviesSortPanel, BorderLayout.SOUTH);
+watchlistPanel.add(watchlistSortPanel, BorderLayout.SOUTH);
+
 
         addMoviePanel.add(new JLabel("Title: "));
         addMoviePanel.add(title);
