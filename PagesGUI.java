@@ -67,7 +67,7 @@ public class PagesGUI {
                         l.setText("Login failed");
                     } else {
                         frame.dispose();
-                        moviePage();
+                        moviePage(user);
                     }
                 } catch (UserNotFoundException ex) {
                     JOptionPane.showMessageDialog(frame, "User not found: " + ex.getMessage(), "Login Error",
@@ -82,7 +82,12 @@ public class PagesGUI {
                 String password = new String(passwordField.getPassword());
                 try {
                     User newUser = User.register(usernameField.getText(), password);
-                    UsersDatabase.updateFile();
+                    if (newUser == null) {
+                        l.setText("Registration failed");
+                    } else {
+                        frame.dispose();
+                        moviePage(newUser);
+                    }
                 } catch (UsernameAlreadyExistsException ex) {
                     JOptionPane.showMessageDialog(frame, "Username already exists: " + ex.getMessage(),
                             "Registration Error", JOptionPane.ERROR_MESSAGE);
@@ -103,7 +108,7 @@ public class PagesGUI {
         frame.setVisible(true);
     }
 
-    static void moviePage() {
+    static void moviePage(User user) {
         JFrame frame = new JFrame("Movie Page");
         String[] columns = { "ID", "Movie Name", "Director", "Release Year", "Running Time" };
         String[][] generalMoviesData = {};
@@ -135,6 +140,10 @@ public class PagesGUI {
                 return false;
             }
         };
+        MovieDatabase.getMoviesByIndex(user.getWatchList().getSet()).stream()
+                .forEach(movie -> watchlistModel.addRow(new Object[] { movie.getId(), movie.getTitle(),
+                        movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime() }));
+
         JTable watchlistTable = new JTable(watchlistModel);
         JScrollPane watchlistScrollPane = new JScrollPane(watchlistTable);
 
