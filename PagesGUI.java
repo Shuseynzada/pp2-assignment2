@@ -55,25 +55,22 @@ public class PagesGUI {
         l = new JLabel();
         l.setBounds(50, 160, 300, 30);
 
-        login.addActionListener((ActionListener) new ActionListener() {
-
+        login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String password = new String(passwordField.getPassword());
                 try {
                     User user = User.login(usernameField.getText(), password);
-                    if (user == null) {
-                        l.setText("Login failed");
-                    } else {
-                        frame.dispose();
-                        moviePage(user);
-                    }
+                    frame.dispose();
+                    moviePage(user);
+                } catch (IncorrectPasswordException ex) {
+                    JOptionPane.showMessageDialog(frame, "Incorrect password: " + ex.getMessage(), "Login Error", JOptionPane.ERROR_MESSAGE);
                 } catch (UserNotFoundException ex) {
-                    JOptionPane.showMessageDialog(frame, ex.getMessage(), "Login Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } 
+                    JOptionPane.showMessageDialog(frame, "User not found: " + ex.getMessage(), "Login Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
+        
 
         signup.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

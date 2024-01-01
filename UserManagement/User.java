@@ -44,6 +44,9 @@ public class User {
     public Watchlist getWatchList() {
         return this.watchlist;
     }
+    public String getPassword() {
+        return this.password;
+    }
 
 
     // Setters
@@ -83,15 +86,19 @@ public class User {
         UsersDatabase.appendToFile(this);
     }
 
-    public static User login(String username, String password) throws UserNotFoundException {
-        User tempUser = new User(-1, username, password);
+    public static User login(String username, String password) throws UserNotFoundException, IncorrectPasswordException {
         for (User user : UsersDatabase.users) {
-            if (tempUser.equals(user)) {
-                return user;
+            if (user.username.equals(username)) {
+                if (user.getPassword().equals(password)) {
+                    return user;
+                } else {
+                    throw new IncorrectPasswordException("Incorrect password.");
+                }
             }
         }
         throw new UserNotFoundException("No such User found");
     }
+    
 
     public static User register(String username, String password) throws UsernameAlreadyExistsException, InvalidPasswordLengthException, InvalidPasswordDigitException, InvalidPasswordUppercaseException, InvalidUsernameException {
         boolean userFlag = false;
