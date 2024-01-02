@@ -14,12 +14,12 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
     private JButton button;
     private JTable table;
     private MoviePage moviePage;
-    private int action;
+    private char action;
 
-    public ButtonCellEditor(MoviePage moviePage, int action) {
+    public ButtonCellEditor(MoviePage moviePage, char action) {
         this.moviePage = moviePage;
         this.action = action;
-        button = new JButton((action == 0) ? "+" : "-");
+        button = new JButton(action+"");
         button.addActionListener(this);
     }
 
@@ -40,9 +40,9 @@ public class ButtonCellEditor extends AbstractCellEditor implements TableCellEdi
         if (selectedRow != -1) { // Check if a row is actually selected
             TableModel model = table.getModel();
             int value = (Integer) model.getValueAt(selectedRow, 0);
-            if (action == 0) {
+            if (action == '+') {
                 moviePage.getUser().getWatchList().addToWatchList(value);
-            } else if (action == 1) {
+            } else if (action == '-') {
                 moviePage.getUser().getWatchList().removeFromList(value);
             }
             UsersDatabase.updateFile();

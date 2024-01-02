@@ -26,7 +26,6 @@ public class Watchlist {
     }
 
     public void addToWatchList(int i) {
-        System.out.println(i);
         watchList.add(i);
     }
 
