@@ -92,12 +92,13 @@ public class MoviePage {
                 }
             }
         });
+        filterByComboBox.setBorder(BorderFactory.createEmptyBorder(0,100, 0, 0));
     
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
         searchPanel.add(filterByComboBox);
         searchPanel.add(startField);
-        searchPanel.add(new JLabel(" to "));
+        searchPanel.add(new JLabel("Search:"));
         searchPanel.add(endField);
         searchPanel.add(filterButton);
     
