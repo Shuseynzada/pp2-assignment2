@@ -66,7 +66,7 @@ public class Movie {
         }
 
         if (runningTime <= 0) {
-            throw aInvalidRunningTimeException("Invalid running time: " + runningTime);
+            throw new InvalidRunningTimeException("Invalid running time: " + runningTime);
         } else {
             this.runningTime = runningTime;
         }
