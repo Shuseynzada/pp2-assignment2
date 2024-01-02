@@ -101,13 +101,4 @@ public class UsersDatabase {
 
         return users;
     }
-
-    /**
-     * Main method to display user information.
-     * 
-     * @param args Command-line arguments (not used).
-     */
-    public static void main(String[] args) {
-        users.forEach(u -> System.out.println(u));
-    }
 }
