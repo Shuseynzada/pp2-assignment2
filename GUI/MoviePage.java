@@ -29,7 +29,7 @@ public class MoviePage {
     }
 
     private void initializeUI() {
-        frame = new JFrame("Movie Page");
+        frame = new JFrame("Movie Program");
         frame.setSize(1500, 1200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     

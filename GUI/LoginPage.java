@@ -11,7 +11,7 @@ public class LoginPage {
     private JLabel statusLabel;
 
     public LoginPage() {
-        frame = new JFrame();
+        frame = new JFrame("Movie Program");
         usernameField = new JTextField();
         passwordField = new JPasswordField();
         statusLabel = new JLabel();
