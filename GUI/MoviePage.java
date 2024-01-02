@@ -179,10 +179,6 @@ public class MoviePage {
                         movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
                         movie.getRunningTime() }));
 
-        MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] {
-                movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime()
-        }));
-
         MovieDatabase.getMoviesByIndex(user.getWatchList().getSet())
                 .forEach(movie -> watchlistModel.addRow(new Object[] {
                         movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
