@@ -1,4 +1,4 @@
-package GUI;
+package Source.GUI;
 
 import javax.swing.JButton;
 import javax.swing.JTable;

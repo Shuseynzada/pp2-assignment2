@@ -1,4 +1,4 @@
-package Exceptions;
+package Source.Exceptions;
 
 public class UserNotFoundException extends Exception{
     public UserNotFoundException(String message) {

@@ -1,15 +1,15 @@
-package GUI;
+package Source.GUI;
 
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import Exceptions.InvalidReleaseYearException;
-import Exceptions.InvalidRunningTimeException;
-import MovieManagement.Movie;
-import MovieManagement.MovieDatabase;
-import UserManagement.User;
+import Source.Exceptions.InvalidReleaseYearException;
+import Source.Exceptions.InvalidRunningTimeException;
+import Source.MovieManagement.Movie;
+import Source.MovieManagement.MovieDatabase;
+import Source.UserManagement.User;
 
 public class MoviePage {
     private JFrame frame;

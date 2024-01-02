@@ -1,4 +1,4 @@
-package GUI;
+package Source.GUI;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -17,8 +17,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import MovieManagement.Movie;
-import MovieManagement.MovieDatabase;
+import Source.MovieManagement.Movie;
+import Source.MovieManagement.MovieDatabase;
 
 public class MoviePanel {
     private JPanel moviesPanel;

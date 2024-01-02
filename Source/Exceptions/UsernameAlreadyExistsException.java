@@ -1,4 +1,4 @@
-package Exceptions;
+package Source.Exceptions;
 
 public class UsernameAlreadyExistsException extends Exception {
     public UsernameAlreadyExistsException(String message) {

@@ -1,6 +1,6 @@
-package MovieManagement;
+package Source.MovieManagement;
 
-import Exceptions.*;
+import Source.Exceptions.*;
 
 public class Movie {
     private int id;

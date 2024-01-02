@@ -1,10 +1,10 @@
-package GUI;
+package Source.GUI;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
-import UserManagement.UsersDatabase;
+import Source.UserManagement.UsersDatabase;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;

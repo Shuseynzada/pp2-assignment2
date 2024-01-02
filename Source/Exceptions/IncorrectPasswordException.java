@@ -1,4 +1,4 @@
-package Exceptions;
+package Source.Exceptions;
 
 public class IncorrectPasswordException extends Exception{
     public IncorrectPasswordException(String message) {

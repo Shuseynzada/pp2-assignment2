@@ -1,4 +1,4 @@
-package Exceptions;
+package Source.Exceptions;
 
 public class InvalidRunningTimeException extends Exception {
     public InvalidRunningTimeException(String message) {

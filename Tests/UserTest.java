@@ -1,8 +1,10 @@
 package Tests;
 
-import UserManagement.*;
-import Exceptions.*;
 import org.junit.*;
+
+import Source.Exceptions.*;
+import Source.UserManagement.*;
+
 import static org.junit.Assert.*;
 
 public class UserTests {

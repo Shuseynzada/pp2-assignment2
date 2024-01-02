@@ -1,9 +1,10 @@
 package Tests;
 
-import MovieManagement.*;
-import UserManagement.*;
 import Resources.*;
-import Exceptions.*;
+import Source.Exceptions.*;
+import Source.MovieManagement.*;
+import Source.UserManagement.*;
+
 import org.junit.*;
 import java.util.List;
 import static org.junit.Assert.*;

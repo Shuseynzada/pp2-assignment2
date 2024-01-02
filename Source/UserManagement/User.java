@@ -1,6 +1,6 @@
-package UserManagement;
+package Source.UserManagement;
 
-import Exceptions.*;
+import Source.Exceptions.*;
 
 public class User {
     private int id;

@@ -1,8 +1,9 @@
-package GUI;
+package Source.GUI;
 
 import javax.swing.*;
-import Exceptions.*;
-import UserManagement.User;
+
+import Source.Exceptions.*;
+import Source.UserManagement.User;
 
 public class LoginPage {
     private JFrame frame;
