@@ -22,8 +22,9 @@ public class MoviePage {
     private JTable watchlistTable;
     private DefaultTableModel generalMoviesModel;
     private DefaultTableModel watchlistModel;
-    private JTextField titleField, directorField, yearField, runningTimeField;
+    private JTextField titleField, directorField, yearField, runningTimeField, searchField;
     private JComboBox<String> generalMoviesSortBy, watchlistSortBy;
+
 
     public MoviePage(User user) {
         this.user = user;
@@ -38,17 +39,31 @@ public class MoviePage {
         frame = new JFrame("Movie Page");
         frame.setSize(1500, 1200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    
         JPanel mainPanel = new JPanel(new BorderLayout());
+    
+        // Create a panel for the search bar and sorting comboboxes
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchField = new JTextField(20);
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> searchMovies());
+        topPanel.add(searchField);
+        topPanel.add(searchButton);
+    
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+    
         JPanel tablesPanel = new JPanel(new GridLayout(1, 2));
         tablesPanel.add(createGeneralMoviesPanel());
         tablesPanel.add(createWatchlistPanel());
-
+    
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
         mainPanel.add(createAddMoviePanel(), BorderLayout.SOUTH);
-
+    
         frame.add(mainPanel);
         frame.setVisible(true);
     }
+    
+    
 
     private JPanel createGeneralMoviesPanel() {
 
@@ -295,6 +310,32 @@ private void sortTable(JTable table, int columnToSortBy) {
             return this;
         }
     }
-
+    private void searchMovies() {
+        String searchText = searchField.getText().toLowerCase();
+        DefaultTableModel generalModel = (DefaultTableModel) generalMoviesTable.getModel();
+        DefaultTableModel watchlistModel = (DefaultTableModel) watchlistTable.getModel();
+    
+        filterMovies(generalModel, searchText);
+        filterMovies(watchlistModel, searchText);
+    }
+    
+    private void filterMovies(DefaultTableModel model, String searchText) {
+        JTable table = (model == generalMoviesModel) ? generalMoviesTable : watchlistTable;
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+    
+        RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
+            public boolean include(Entry entry) {
+                for (int i = 0; i < entry.getValueCount(); i++) {
+                    if (entry.getStringValue(i).toLowerCase().contains(searchText)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    
+        sorter.setRowFilter(filter);
+        table.setRowSorter(sorter);
+    }    
     
 }
