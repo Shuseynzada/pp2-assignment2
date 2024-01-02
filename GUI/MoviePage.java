@@ -2,8 +2,12 @@ package GUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import Exceptions.InvalidReleaseYearException;
 import Exceptions.InvalidRunningTimeException;
@@ -187,9 +191,88 @@ public class MoviePage {
         return sortPanel;
     }
 
-    private void sortMovies(ActionEvent e) {
-        // Sorting
+private void sortMovies(ActionEvent e) {
+    JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
+    String selectedItem = (String) comboBox.getSelectedItem();
+
+    // Sort General Movies table
+    if (comboBox == generalMoviesSortBy) {
+        int columnToSortBy = -1; // Initialize with an invalid value
+        switch (selectedItem) {
+            case "Name":
+                columnToSortBy = 1; // Movie Name column
+                break;
+            case "Director":
+                columnToSortBy = 2; // Director column
+                break;
+            case "Release Year":
+                columnToSortBy = 3; // Release Year column
+                break;
+            case "Running Time":
+                columnToSortBy = 4; // Running Time column
+                break;
+            default:
+                // Handle default case or no selection
+                break;
+        }
+        if (columnToSortBy != -1) {
+            sortTable(generalMoviesTable, columnToSortBy);
+        }
     }
+
+    // Sort Watchlist table
+    if (comboBox == watchlistSortBy) {
+        int columnToSortBy = -1; // Initialize with an invalid value
+        switch (selectedItem) {
+            case "Name":
+                columnToSortBy = 1; // Movie Name column
+                break;
+            case "Director":
+                columnToSortBy = 2; // Director column
+                break;
+            case "Release Year":
+                columnToSortBy = 3; // Release Year column
+                break;
+            case "Running Time":
+                columnToSortBy = 4; // Running Time column
+                break;
+            default:
+                // Handle default case or no selection
+                break;
+        }
+        if (columnToSortBy != -1) {
+            sortTable(watchlistTable, columnToSortBy);
+        }
+    }
+}
+
+private void sortTable(JTable table, int columnToSortBy) {
+    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) table.getModel());
+    table.setRowSorter(sorter);
+    sorter.setSortsOnUpdates(true);
+    List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+
+    switch (columnToSortBy) {
+        case 1: // Sort by Movie Name
+            sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+            break;
+        case 2: // Sort by Director
+            sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
+            break;
+        case 3: // Sort by Release Year
+            sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
+            break;
+        case 4: // Sort by Running Time
+            sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
+            break;
+        default:
+            break;
+    }
+
+    sorter.setSortKeys(sortKeys);
+    sorter.sort();
+}
+
 
     private void setColumnWidths(JTable table, int[] widths) {
         for (int i = 0; i < widths.length; i++) {
@@ -212,4 +295,6 @@ public class MoviePage {
             return this;
         }
     }
+
+    
 }
