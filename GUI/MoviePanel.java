@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import javax.swing.BoxLayout;
@@ -94,12 +95,15 @@ public class MoviePanel {
         sortPanel.add(new JLabel(labelText));
         sortPanel.add(comboBox);
         comboBox.addActionListener(e -> {
-            JComboBox<String> cb = (JComboBox<String>) e.getSource();
-            String selectedSortBy = (String) cb.getSelectedItem();
-            this.currentSortModifier = selectedSortBy;
-            refreshPanel();
+            Object source = e.getSource();
+            if (source instanceof JComboBox) {
+                JComboBox<?> cb = (JComboBox<?>) source;
+                String selectedSortBy = Objects.requireNonNull((String) cb.getSelectedItem());
+                this.currentSortModifier = selectedSortBy;
+                refreshPanel();
+            }
         });
-        return sortPanel;
+    return sortPanel;
     }
 
     private JPanel createFilterPanel() {
