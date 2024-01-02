@@ -48,6 +48,7 @@ public class MoviePanel {
 
     private void initializeUI() {
         moviesPanel = new JPanel(new BorderLayout());
+        moviesPanel.add(new JLabel(this.panelTitle), BorderLayout.NORTH);
 
         moviesModel = new DefaultTableModel(new String[][] {}, columns) {
             @Override
@@ -61,14 +62,7 @@ public class MoviePanel {
         moviesTable.getColumnModel().getColumn(5).setCellRenderer(new ButtonCellRenderer((isButtonAdd) ? "+" : "-"));
         moviesTable.getColumnModel().getColumn(5)
                 .setCellEditor(new ButtonCellEditor(moviePage, (isButtonAdd) ? '+' : '-'));
-        moviesPanel.add(new JLabel(panelTitle), BorderLayout.NORTH);
         moviesPanel.add(new JScrollPane(moviesTable), BorderLayout.CENTER);
-        moviesPanel.add(
-                createSortPanel("Sort Watchlist By: ",
-                        new JComboBox<>(
-                                new String[] { "Default", "Name", "Director", "Release Year", "Running Time" })),
-                BorderLayout.SOUTH);
-
         filterPanel = createFilterPanel();
         filterPanel.setVisible(false);
 
@@ -82,8 +76,14 @@ public class MoviePanel {
                 moviesPanel.revalidate(); // Update the panel layout
             }
         });
+        JPanel southPanel = new JPanel();
+        southPanel.add(toggleFilterButton);
+        southPanel.add(createSortPanel("Sort By: ",
+                new JComboBox<>(
+                        new String[] { "Default", "Name", "Director", "Release Year", "Running Time" })),
+                BorderLayout.SOUTH);
 
-        moviesPanel.add(toggleFilterButton, BorderLayout.PAGE_START);
+        moviesPanel.add(southPanel, BorderLayout.SOUTH);
         moviesPanel.add(filterPanel, BorderLayout.LINE_START);
 
         refreshPanel();
@@ -203,9 +203,11 @@ public class MoviePanel {
             boolean matchesTitle = (title == null || title.isEmpty()) || movie.getTitle().contains(title);
             boolean matchesDirector = (director == null || director.isEmpty())
                     || movie.getDirector().contains(director);
-            boolean matchesReleaseYear = (minReleaseYear == null || minReleaseYear == 0 || movie.getReleaseYear() >= minReleaseYear) &&
+            boolean matchesReleaseYear = (minReleaseYear == null || minReleaseYear == 0
+                    || movie.getReleaseYear() >= minReleaseYear) &&
                     (maxReleaseYear == null || maxReleaseYear == 0 || movie.getReleaseYear() <= maxReleaseYear);
-            boolean matchesRunningTime = (minRunningTime == null || minRunningTime == 0 || movie.getRunningTime() >= minRunningTime) &&
+            boolean matchesRunningTime = (minRunningTime == null || minRunningTime == 0
+                    || movie.getRunningTime() >= minRunningTime) &&
                     (maxRunningTime == null || maxRunningTime == 0 || movie.getRunningTime() <= maxRunningTime);
 
             return matchesTitle && matchesDirector && matchesReleaseYear && matchesRunningTime;

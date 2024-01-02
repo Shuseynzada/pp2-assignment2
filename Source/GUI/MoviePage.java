@@ -42,10 +42,10 @@ public class MoviePage {
     
         JPanel tablesPanel = new JPanel(new GridLayout(1, 2));
 
-        generalMoviesPanel = new MoviePanel("General Movies",
+        generalMoviesPanel = new MoviePanel("Movie Database",
                 new String[] { "ID", "Movie Name", "Director", "Release Year", "Running Time", "Add Watchlist" }, true,
                 this);
-        watchlistMoviesPanel = new MoviePanel("Watchlist Movies",
+        watchlistMoviesPanel = new MoviePanel("Your movies",
                 new String[] { "ID", "Movie Name", "Director", "Release Year", "Running Time", "Remove" },
                 false, this);
 
