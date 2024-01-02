@@ -16,7 +16,6 @@ public class MovieDatabaseTests {
     public static void setupClass() {
        // Redirect the MovieDatabase to use the test file
        MovieDatabase.setFilepath(TEST_DATABASE_PATH);
-       createEmptyFile(TEST_DATABASE_PATH);
     }
 
     @Before
@@ -57,16 +56,7 @@ public class MovieDatabaseTests {
     @After
     public static void tearDownClass() {
         // Cleanup: Delete the test database file and reset the file path in MovieDatabase
-        deleteFile(TEST_DATABASE_PATH);
         MovieDatabase.setFilepath(ORIGINAL_DATABASE_PATH);
-    }
-
-    private static void createEmptyFile(String path) {
-        try {
-            Files.createFile(Paths.get(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void clearFile(String path) {
@@ -77,8 +67,4 @@ public class MovieDatabaseTests {
             e.printStackTrace();
         }
     }
-
-    private static void deleteFile(String path) {
-        new File(path).delete();
     }
-}
