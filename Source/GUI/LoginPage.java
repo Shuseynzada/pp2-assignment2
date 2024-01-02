@@ -1,16 +1,25 @@
 package Source.GUI;
 
 import javax.swing.*;
-
 import Source.Exceptions.*;
 import Source.UserManagement.User;
 
+/**
+ * The LoginPage class represents the user login interface for the Movie Program.
+ * Users can enter their username and password to log in or sign up for a new account.
+ *
+ * @author Farhad Aliyev
+ * @date 02/01/2024
+ */
 public class LoginPage {
     private JFrame frame;
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JLabel statusLabel;
 
+    /**
+     * Initializes the login page user interface.
+     */
     public LoginPage() {
         frame = new JFrame("Movie Program");
         usernameField = new JTextField();
@@ -19,6 +28,9 @@ public class LoginPage {
         setupUI();
     }
 
+    /**
+     * Sets up the user interface components.
+     */
     private void setupUI() {
         frame.setSize(400, 400);
         frame.setLayout(null);
@@ -57,6 +69,9 @@ public class LoginPage {
         frame.setVisible(true);
     }
 
+    /**
+     * Handles the login process when the "Login" button is clicked.
+     */
     private void login() {
         String password = new String(passwordField.getPassword());
         try {
@@ -68,6 +83,9 @@ public class LoginPage {
         }
     }
 
+    /**
+     * Handles the user registration process when the "Sign Up" button is clicked.
+     */
     private void signUp() {
         String password = new String(passwordField.getPassword());
         try {

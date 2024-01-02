@@ -21,6 +21,14 @@ import javax.swing.table.DefaultTableModel;
 import Source.MovieManagement.Movie;
 import Source.MovieManagement.MovieDatabase;
 
+/**
+ * The {@code MoviePanel} class represents a graphical user interface panel for displaying and interacting with a list of movies.
+ * It provides functionality for sorting and filtering movies, as well as adding or removing movies from a list.
+ * 
+ * @author Farhad Aliyev
+ * @author Shamkhal Huseynzade
+ * @date 02/01/2024
+ */
 public class MoviePanel {
     private JPanel moviesPanel;
     private JPanel filterPanel;
@@ -35,7 +43,15 @@ public class MoviePanel {
     private int filterMaxYear, filterMinYear, filterMaxRunningTime, filterMinRunningTime;
     private List<Movie> renderedMovies;
 
-    MoviePanel(String title, String[] columns, boolean isButtonAdd, MoviePage moviePage) {
+    /**
+     * Constructs a new MoviePanel with the specified parameters.
+     *
+     * @param title     The title of the panel.
+     * @param columns   The column names for the movie table.
+     * @param isButtonAdd   Indicates whether the panel should have an "Add" button.
+     * @param moviePage The parent MoviePage associated with this panel.
+     */
+    public MoviePanel(String title, String[] columns, boolean isButtonAdd, MoviePage moviePage) {
         this.panelTitle = title;
         this.columns = columns;
         this.isButtonAdd = isButtonAdd;
@@ -43,10 +59,18 @@ public class MoviePanel {
         initializeUI();
     }
 
+    /**
+     * Gets the JPanel representing the MoviePanel.
+     *
+     * @return The JPanel representing the MoviePanel.
+     */
     public JPanel getPanel() {
         return this.moviesPanel;
     }
 
+    /**
+     * Initializes the user interface components and layout of the MoviePanel.
+     */
     private void initializeUI() {
         moviesPanel = new JPanel(new BorderLayout());
         moviesPanel.add(new JLabel(this.panelTitle), BorderLayout.NORTH);
@@ -90,6 +114,13 @@ public class MoviePanel {
         refreshPanel();
     }
 
+    /**
+     * Creates a JPanel containing sorting options.
+     *
+     * @param labelText The label text for the sorting options.
+     * @param comboBox  The JComboBox for selecting sorting options.
+     * @return The JPanel containing sorting options.
+     */
     private JPanel createSortPanel(String labelText, JComboBox<String> comboBox) {
         JPanel sortPanel = new JPanel();
         sortPanel.add(new JLabel(labelText));
@@ -103,9 +134,14 @@ public class MoviePanel {
                 refreshPanel();
             }
         });
-    return sortPanel;
+        return sortPanel;
     }
 
+    /**
+     * Creates a JPanel containing filtering options.
+     *
+     * @return The JPanel containing filtering options.
+     */
     private JPanel createFilterPanel() {
         JPanel filterPanel = new JPanel();
         filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.Y_AXIS));
@@ -165,6 +201,12 @@ public class MoviePanel {
         return filterPanel;
     }
 
+    /**
+     * Attempts to parse an integer from a string value.
+     *
+     * @param value The string value to parse.
+     * @return The parsed integer value or 0 if parsing fails.
+     */
     private Integer tryParseInt(String value) {
         try {
             return Integer.parseInt(value);
@@ -173,6 +215,9 @@ public class MoviePanel {
         }
     }
 
+    /**
+     * Refreshes the panel by updating the displayed movies based on sorting and filtering criteria.
+     */
     public void refreshPanel() {
 
         moviesModel.setRowCount(0);
@@ -194,12 +239,29 @@ public class MoviePanel {
                         movie.getRunningTime() }));
     }
 
+    /**
+     * Sets the preferred column widths for the movie table.
+     *
+     * @param table   The JTable for which to set column widths.
+     * @param widths  An array of integers representing the preferred widths for each column.
+     */
     private static void setColumnWidths(JTable table, int[] widths) {
         for (int i = 0; i < widths.length; i++) {
             table.getColumnModel().getColumn(i).setPreferredWidth(widths[i]);
         }
     }
 
+    /**
+     * Constructs a Predicate for filtering movies based on specified criteria.
+     *
+     * @param title           The movie title criteria for filtering.
+     * @param director        The movie director criteria for filtering.
+     * @param minReleaseYear  The minimum release year criteria for filtering.
+     * @param maxReleaseYear  The maximum release year criteria for filtering.
+     * @param minRunningTime  The minimum running time criteria for filtering.
+     * @param maxRunningTime  The maximum running time criteria for filtering.
+     * @return A Predicate for filtering movies based on the specified criteria.
+     */
     public Predicate<Movie> getFilterLogic(String title, String director, Integer minReleaseYear,
             Integer maxReleaseYear, Integer minRunningTime, Integer maxRunningTime) {
         return movie -> {
@@ -218,6 +280,12 @@ public class MoviePanel {
         };
     }
 
+    /**
+     * Constructs a Comparator for sorting movies based on the specified criteria.
+     *
+     * @param sortBy The sorting criteria for movies.
+     * @return A Comparator for sorting movies based on the specified criteria.
+     */
     public Comparator<Movie> getSortLogic(String sortBy) {
         switch (sortBy) {
             case "Name":
