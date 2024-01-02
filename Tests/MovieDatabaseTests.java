@@ -1,6 +1,7 @@
 package Tests;
 
 import MovieManagement.*;
+import UserManagement.*;
 import Resources.*;
 import Exceptions.*;
 import org.junit.*;
@@ -55,7 +56,6 @@ public class MovieDatabaseTests {
 
     @After
     public static void tearDownClass() {
-        // Cleanup: Delete the test database file and reset the file path in MovieDatabase
         MovieDatabase.setFilepath(ORIGINAL_DATABASE_PATH);
     }
 
