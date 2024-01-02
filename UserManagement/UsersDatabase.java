@@ -12,6 +12,17 @@ public class UsersDatabase {
     private static String filepath = "Resources/users.csv";
     static List<User> users = loadUsersFromFile();
 
+    // Method to change the file path for testing
+    public static void setFilePath(String newPath) {
+        filepath = newPath;
+        users = loadUsersFromFile();
+    }
+
+    // Method to get the current file path
+    public static String getFilePath() {
+        return filepath;
+    }
+
     public static void appendToFile(User u) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath, true))) {
             writer.write(u.toString());
