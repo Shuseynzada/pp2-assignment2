@@ -2,14 +2,15 @@ package GUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.Comparator;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 
 import Exceptions.InvalidReleaseYearException;
 import Exceptions.InvalidRunningTimeException;
-import GUI.MoviePage.ButtonCellRenderer;
 import MovieManagement.Movie;
 import MovieManagement.MovieDatabase;
 import UserManagement.User;
@@ -21,8 +22,9 @@ public class MoviePage {
     private JTable watchlistTable;
     private DefaultTableModel generalMoviesModel;
     private DefaultTableModel watchlistModel;
-    private JTextField titleField, directorField, yearField, runningTimeField;
-    public String userSelectedSortBy = "", userSelectedFilterBy = "";
+    private JTextField titleField, directorField, yearField, runningTimeField, searchField;
+    private JComboBox<String> generalMoviesSortBy, watchlistSortBy;
+
 
     public MoviePage(User user) {
         this.user = user;
@@ -37,17 +39,88 @@ public class MoviePage {
         frame = new JFrame("Movie Page");
         frame.setSize(1500, 1200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel mainPanel = new JPanel(new BorderLayout());
+    
+        JPanel mainPanel = new JPanel(new BorderLayout()); 
+        
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchField = new JTextField(20);
+        JButton searchButton = new JButton("Search");
+        searchButton.addActionListener(e -> searchMovies());
+        topPanel.add(searchField);
+        topPanel.add(searchButton);
+    
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+    
         JPanel tablesPanel = new JPanel(new GridLayout(1, 2));
         tablesPanel.add(createGeneralMoviesPanel());
         tablesPanel.add(createWatchlistPanel());
-
+    
         mainPanel.add(tablesPanel, BorderLayout.CENTER);
         mainPanel.add(createAddMoviePanel(), BorderLayout.SOUTH);
 
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        searchField = new JTextField(20);
+        searchButton.addActionListener(e -> searchMovies());
+    
+        JComboBox<String> filterByComboBox = new JComboBox<>(new String[]{"Running Time", "Release Year"});
+        JTextField startField = new JTextField(5);
+        JTextField endField = new JTextField(5);
+    
+        JButton filterButton = new JButton("Filter");
+        filterButton.addActionListener(e -> {
+            String searchText = searchField.getText().toLowerCase();
+            String startText = startField.getText();
+            String endText = endField.getText();
+            String selectedFilter = (String) filterByComboBox.getSelectedItem();
+    
+            if (!startText.isEmpty() && !endText.isEmpty()) {
+                try {
+                    int start = Integer.parseInt(startText);
+                    int end = Integer.parseInt(endText);
+    
+                    if (start <= 0 || (start < 1885 && end > 2024)) {
+                        JOptionPane.showMessageDialog(frame, "Please give appropriate numbers.", "Filter Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+    
+                    DefaultTableModel generalModel = generalMoviesModel;
+    
+                    filterMovies(generalModel, searchText, start, end, selectedFilter);
+                    filterMovies(watchlistModel, searchText, start, end, selectedFilter);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(frame, "Please enter valid numbers.", "Filter Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        filterByComboBox.setBorder(BorderFactory.createEmptyBorder(0,100, 0, 0));
+    
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        searchPanel.add(filterByComboBox);
+        searchPanel.add(startField);
+        searchPanel.add(new JLabel("Search:"));
+        searchPanel.add(endField);
+        searchPanel.add(filterButton);
+    
+        mainPanel.add(searchPanel, BorderLayout.NORTH);
+    
+    
+        searchPanel.add(searchField);
+        searchPanel.add(searchButton);
+        searchPanel.add(filterByComboBox);
+        searchPanel.add(startField);
+        searchPanel.add(new JLabel(" to "));
+        searchPanel.add(endField);
+        searchPanel.add(filterButton);
+    
+        mainPanel.add(searchPanel, BorderLayout.NORTH);
+        
+    
         frame.add(mainPanel);
         frame.setVisible(true);
     }
+    
+    
 
     private JPanel createGeneralMoviesPanel() {
 
@@ -61,11 +134,9 @@ public class MoviePage {
                 return column == 5;
             }
         };
-
-        MovieDatabase.getMovies().stream()
-                .forEach(movie -> generalMoviesModel.addRow(new Object[] {
-                        movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
-                        movie.getRunningTime() }));
+        MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] {
+                movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
+                movie.getRunningTime() }));
 
         generalMoviesTable = new JTable(generalMoviesModel);
         generalMoviesTable.setSelectionModel(new DefaultListSelectionModel() {
@@ -84,7 +155,8 @@ public class MoviePage {
         generalMoviesPanel.add(new JScrollPane(generalMoviesTable), BorderLayout.CENTER);
         generalMoviesPanel.add(
                 createSortPanel("Sort General Movies By: ",
-                        new JComboBox<>(new String[] { "Name", "Director", "Release Year", "Running Time" })),
+                        generalMoviesSortBy = new JComboBox<>(
+                                new String[] { "Name", "Director", "Release Year", "Running Time" })),
                 BorderLayout.SOUTH);
 
         return generalMoviesPanel;
@@ -122,7 +194,8 @@ public class MoviePage {
         watchlistPanel.add(new JScrollPane(watchlistTable), BorderLayout.CENTER);
         watchlistPanel.add(
                 createSortPanel("Sort Watchlist By: ",
-                        new JComboBox<>(new String[] { "Name", "Director", "Release Year", "Running Time" })),
+                        watchlistSortBy = new JComboBox<>(
+                                new String[] { "Name", "Director", "Release Year", "Running Time" })),
                 BorderLayout.SOUTH);
 
         return watchlistPanel;
@@ -170,14 +243,9 @@ public class MoviePage {
         generalMoviesModel.setRowCount(0);
         watchlistModel.setRowCount(0);
 
-        System.out.println(userSelectedSortBy);
-        Comparator<Movie> sortLogic = getSortLogic(userSelectedSortBy);
-        Predicate<Movie> filterLogic = getFilterLogic(userSelectedFilterBy);
-
-        MovieDatabase.getMovies().stream().filter(filterLogic).sorted(sortLogic)
-                .forEach(movie -> generalMoviesModel.addRow(new Object[] {
-                        movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(),
-                        movie.getRunningTime() }));
+        MovieDatabase.getMovies().forEach(movie -> generalMoviesModel.addRow(new Object[] {
+                movie.getId(), movie.getTitle(), movie.getDirector(), movie.getReleaseYear(), movie.getRunningTime()
+        }));
 
         MovieDatabase.getMoviesByIndex(user.getWatchList().getSet())
                 .forEach(movie -> watchlistModel.addRow(new Object[] {
@@ -191,50 +259,92 @@ public class MoviePage {
         JPanel sortPanel = new JPanel();
         sortPanel.add(new JLabel(labelText));
         sortPanel.add(comboBox);
-        comboBox.addActionListener(e -> {
-            JComboBox<String> cb = (JComboBox<String>) e.getSource();
-            String selectedSortBy = (String) cb.getSelectedItem();
-
-            switch (selectedSortBy) {
-                case "Name":
-                    this.userSelectedSortBy = "Title";
-                    break;
-                case "Director":
-                    this.userSelectedSortBy = "Director";
-                    break;
-                case "Release Year":
-                    this.userSelectedSortBy = "Release Year";
-                    break;
-                case "Running Time":
-                    this.userSelectedSortBy = "Running Time";
-                    break;
-                default:
-                    this.userSelectedSortBy = ""; // No sorting
-            }
-
-            refreshTables();
-        });
+        comboBox.addActionListener(this::sortMovies);
         return sortPanel;
     }
 
-    public Predicate<Movie> getFilterLogic(String director) {
-        return movie -> true;
-    }
+private void sortMovies(ActionEvent e) {
+    JComboBox<String> comboBox = (JComboBox<String>) e.getSource();
+    String selectedItem = (String) comboBox.getSelectedItem();
 
-    public Comparator<Movie> getSortLogic(String sortBy) {
-        switch (sortBy) {
-            case "Title":
-                return Comparator.comparing(Movie::getTitle);
+    // Sort General Movies table
+    if (comboBox == generalMoviesSortBy) {
+        int columnToSortBy = -1; // Initialize with an invalid value
+        switch (selectedItem) {
+            case "Name":
+                columnToSortBy = 1; // Movie Name column
+                break;
             case "Director":
-                return Comparator.comparing(Movie::getDirector);
+                columnToSortBy = 2; // Director column
+                break;
             case "Release Year":
-                return Comparator.comparing(Movie::getReleaseYear);
+                columnToSortBy = 3; // Release Year column
+                break;
             case "Running Time":
-                return Comparator.comparing(Movie::getRunningTime);
+                columnToSortBy = 4; // Running Time column
+                break;
             default:
-                return (movie1, movie2) -> 0;
+                // Handle default case or no selection
+                break;
+        }
+        if (columnToSortBy != -1) {
+            sortTable(generalMoviesTable, columnToSortBy);
         }
     }
+
+    // Sort Watchlist table
+    if (comboBox == watchlistSortBy) {
+        int columnToSortBy = -1; // Initialize with an invalid value
+        switch (selectedItem) {
+            case "Name":
+                columnToSortBy = 1; // Movie Name column
+                break;
+            case "Director":
+                columnToSortBy = 2; // Director column
+                break;
+            case "Release Year":
+                columnToSortBy = 3; // Release Year column
+                break;
+            case "Running Time":
+                columnToSortBy = 4; // Running Time column
+                break;
+            default:
+                // Handle default case or no selection
+                break;
+        }
+        if (columnToSortBy != -1) {
+            sortTable(watchlistTable, columnToSortBy);
+        }
+    }
+}
+
+private void sortTable(JTable table, int columnToSortBy) {
+    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>((DefaultTableModel) table.getModel());
+    table.setRowSorter(sorter);
+    sorter.setSortsOnUpdates(true);
+    List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+
+    switch (columnToSortBy) {
+        case 1: // Sort by Movie Name
+            sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+            break;
+        case 2: // Sort by Director
+            sortKeys.add(new RowSorter.SortKey(2, SortOrder.ASCENDING));
+            break;
+        case 3: // Sort by Release Year
+            sortKeys.add(new RowSorter.SortKey(3, SortOrder.ASCENDING));
+            break;
+        case 4: // Sort by Running Time
+            sortKeys.add(new RowSorter.SortKey(4, SortOrder.ASCENDING));
+            break;
+        default:
+            break;
+    }
+
+    sorter.setSortKeys(sortKeys);
+    sorter.sort();
+}
+
 
     private void setColumnWidths(JTable table, int[] widths) {
         for (int i = 0; i < widths.length; i++) {
@@ -256,5 +366,51 @@ public class MoviePage {
             setText(this.text);
             return this;
         }
+    }
+    private void searchMovies() {
+        String searchText = searchField.getText().toLowerCase();
+        DefaultTableModel generalModel = (DefaultTableModel) generalMoviesTable.getModel();
+        DefaultTableModel watchlistModel = (DefaultTableModel) watchlistTable.getModel();
+    
+        filterMovies(generalModel, searchText);
+        filterMovies(watchlistModel, searchText);
+    }
+    
+    private void filterMovies(DefaultTableModel model, String searchText) {
+        JTable table = (model == generalMoviesModel) ? generalMoviesTable : watchlistTable;
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+    
+        RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
+            public boolean include(Entry entry) {
+                for (int i = 0; i < entry.getValueCount(); i++) {
+                    if (entry.getStringValue(i).toLowerCase().contains(searchText)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    
+        sorter.setRowFilter(filter);
+        table.setRowSorter(sorter);
+    }    
+    private void filterMovies(DefaultTableModel model, String searchText, int start, int end, String selectedFilter) {
+        JTable table = (model == generalMoviesModel) ? generalMoviesTable : watchlistTable;
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+    
+        RowFilter<Object, Object> rowFilter = new RowFilter<Object, Object>() {
+            public boolean include(Entry entry) {
+                int value;
+                try {
+                    value = Integer.parseInt(entry.getStringValue(selectedFilter.equals("Running Time") ? 4 : 3));
+                    return value >= start && value <= end && entry.getStringValue(1).toLowerCase().contains(searchText);
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        };
+    
+        sorter.setRowFilter(rowFilter);
+        table.setRowSorter(sorter);
     }
 }
